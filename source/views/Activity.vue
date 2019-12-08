@@ -1,6 +1,6 @@
 <template lang="pug">
     div#about
-        h1 About page
+        h1 Страница активности
 </template>
 
 <script>

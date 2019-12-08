@@ -3,23 +3,47 @@
         div( class='block' )
             img( class='background-image' src='/images/auth-image.jpg' )
             div( class='background-text' )
-                p( class='text' ) Some text
+                p( class='text' ) Система учета студентов в Общежитиях
 
         div( class='block' )
             form#form
-                input( class='input' )
+                h1( class='title' ) StudDom
+                p( class='subtitle' ) Войти в систему
+                p( class='help' ) Используйте учетную запись, чтобы войти в систему
+
+                div( class='input-div' )
+                    input( class='input' type='text' placeholder='Логин' )
+                    input( class='input' type='password' placeholder='Пароль' )
+
+                div( class='confirm-div' )
+                    Checkbox( title='Запомнить меня' v-model='saveMe' )
+                    button( class='sign-in' )
+                        i( class='icon icon-login' )
+                        span( class='button-text' ) Войти
 </template>
 
 <script>
+import Checkbox from ':src/components/Auth/Checkbox.vue'
+
 export default {
-    name: 'AuthPage',
+    components: { Checkbox },
     // computed: { user }
+    data: function () {
+        return {
+            login: '',
+            password: '',
+            saveMe: false
+        }
+    }
 }
 
 function user () {
     return this.$store.state.user
 }
+
 </script>
+
+23/5
 
 <style lang='stylus'>
 @import '~src/style/palette'
@@ -44,7 +68,7 @@ function user () {
         width 50%
 
     .background-image
-        max-height 100%
+        width 100%
 
     .background-text
         align-items center
@@ -59,5 +83,55 @@ function user () {
 
         .text
             color $white
-            font-size 24px
+            font-size 2.635vw
+            line-height 3.075vw
+            text-align center
+            width 32.943vw
+
+    #form
+        width 30.747vw
+
+        .title
+            font-size 3.075vw
+            margin 1.757vw 0
+
+        .subtitle
+            font-size 1.757vw
+
+        .help
+            color #B5B5B5
+            font-size 1.025vw
+
+        .input-div
+            margin 2.050vw 0
+
+        .input
+            border 0.073vw solid #B5B5B5
+            border-radius 5px
+            font-size 1.171vw
+            margin 0.732vw 0
+            outline none
+            padding 1.171vw 1.025vw
+            width 100%
+
+        .confirm-div
+            align-items center
+            display flex
+            justify-content space-between
+
+        .sign-in
+            align-items center
+            background $blue
+            border none
+            border-radius 5px
+            color $white
+            cursor pointer
+            display flex
+            font-size 18px
+            padding 12px 14px
+
+            .icon
+                margin-right 8px
+                position relative
+                top 2px
 </style>

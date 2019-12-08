@@ -35,7 +35,7 @@ export default {
         position absolute
         bottom 0
         top 0
-        left 320px
+        left 260px
         right 0
 
 #page-container
@@ -52,5 +52,11 @@ export default {
     z-index 1
 
 #page
-    width 1120px
+    width 1040px
+
+    
+@media (min-width 1600px)
+    #page
+        width 1340px
+
 </style>

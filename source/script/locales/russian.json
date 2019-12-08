@@ -1,0 +1,13 @@
+{
+    "locale": {
+        "code": "ru",
+        "name": "Русский"
+    },
+
+    "activity": "активность",
+    "dormitories": "общежития",
+    "students": "студенты",
+    "users": "пользователи",
+    "records": "отчеты",
+    "settings": "настройки"
+}

@@ -1,0 +1,40 @@
+:authority: stackoverflow.com
+:method: GET
+:path: /questions/6490898/node-js-forward-all-traffic-from-port-a-to-port-b
+:scheme: https
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+accept-encoding: gzip, deflate, br
+accept-language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control: no-cache
+cookie: prov=216f3223-4fe9-7153-e51d-5ea9eae20046; _ga=GA1.2.566535739.1569760064; __qca=P0-1399377877-1569760063708; __gads=ID=1b899fef35729279:T=1569760090:S=ALNI_MYy0byMbYqafHbdctXIvQDmhJ-Dwg; _ym_uid=1571230311820594583; _ym_d=1571230311; _gid=GA1.2.1548993738.1575395026; mfnes=fb47CBYQAxoLCOjH093ciPw3EAUgASgBMggwMjc4NjU2YQ==; acct=t=u84uUwo9L%2bpJJIk29j98D1FcI%2flrh2bQ&s=gzT13ZGbbiDCWV0CMbOnyab6FRYnyhV0
+pragma: no-cache
+sec-fetch-mode: navigate
+sec-fetch-site: cross-site
+sec-fetch-user: ?1
+upgrade-insecure-requests: 1
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.139
+
+{
+    "need": "handler-server"
+}
+
+
+:authority: stackoverflow.com
+:method: GET
+:path: /questions/6490898/node-js-forward-all-traffic-from-port-a-to-port-b
+:scheme: https
+accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+accept-encoding: gzip, deflate, br
+accept-language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control: no-cache
+cookie: prov=216f3223-4fe9-7153-e51d-5ea9eae20046; _ga=GA1.2.566535739.1569760064; __qca=P0-1399377877-1569760063708; __gads=ID=1b899fef35729279:T=1569760090:S=ALNI_MYy0byMbYqafHbdctXIvQDmhJ-Dwg; _ym_uid=1571230311820594583; _ym_d=1571230311; _gid=GA1.2.1548993738.1575395026; mfnes=fb47CBYQAxoLCOjH093ciPw3EAUgASgBMggwMjc4NjU2YQ==; acct=t=u84uUwo9L%2bpJJIk29j98D1FcI%2flrh2bQ&s=gzT13ZGbbiDCWV0CMbOnyab6FRYnyhV0
+pragma: no-cache
+sec-fetch-mode: navigate
+sec-fetch-site: cross-site
+sec-fetch-user: ?1
+upgrade-insecure-requests: 1
+user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36 OPR/64.0.3417.139
+{
+    "available": "true",
+    "ip": "192.168.100.001"
+}

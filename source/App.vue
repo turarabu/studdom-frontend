@@ -9,12 +9,24 @@ import AuthPage from ':src/components/Auth.vue'
 import Dashboard from ':src/components/Dashboard.vue'
 
 export default {
+    beforeCreate: init,
     components: { AuthPage, Dashboard },
-    computed: { user }
+    computed: { user },
+    mounted: start
+}
+
+function init () {
+    // this.setLangVuex(this.$store)
 }
 
 function user () {
     return this.$store.state.user
+}
+
+function start () {
+    this.$watch('$route', route => {
+        console.log(route)
+    })
 }
 </script>
 
