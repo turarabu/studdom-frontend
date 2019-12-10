@@ -6,14 +6,14 @@
                 p( class='text' ) Система учета студентов в Общежитиях
 
         div( class='block' )
-            form#form
+            form#form( @submit='signIn' )
                 h1( class='title' ) StudDom
                 p( class='subtitle' ) Войти в систему
                 p( class='help' ) Используйте учетную запись, чтобы войти в систему
 
                 div( class='input-div' )
-                    input( class='input' type='text' placeholder='Логин' )
-                    input( class='input' type='password' placeholder='Пароль' )
+                    input( class='input' type='text' placeholder='Логин' v-model='login' )
+                    input( class='input' type='password' placeholder='Пароль' v-model='password' )
 
                 div( class='confirm-div' )
                     Checkbox( title='Запомнить меня' v-model='saveMe' )
@@ -27,7 +27,7 @@ import Checkbox from ':src/components/Auth/Checkbox.vue'
 
 export default {
     components: { Checkbox },
-    // computed: { user }
+    methods: { signIn },
     data: function () {
         return {
             login: '',
@@ -37,8 +37,19 @@ export default {
     }
 }
 
-function user () {
-    return this.$store.state.user
+async function signIn (event) {
+    event.preventDefault()
+    
+    var data = {
+        login: this.login,
+        password: this.password
+    }
+
+    var { status, data } = await this.api.post('user/sign-in', data)
+    console.log(status, data)
+
+    if ( status === 200 )
+        this.$store.commit('user-set', data)
 }
 
 </script>

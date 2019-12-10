@@ -11,12 +11,12 @@
             
         tbody( class='body' )
             router-link( v-for='(dor, id) of dors' tag='tr' class='row' :to='`/dormitories/id/${id}`' :key='id' )
-                td( class='data' ) {{ dor[0] }}
-                td( class='data' ) {{ dor[1] }}
-                td( class='data' ) {{ dor[2] }}
+                td( class='data' ) {{ dor.name }}
+                td( class='data' ) {{ getCity(dor.city) }}
+                td( class='data' ) {{ dor.students }}
                 td( class='data' )
-                    ProgressBar( :value='dor[3]' )
-                td( class='data' ) {{ dor[4] }}
+                    ProgressBar( :value='dor.activity' )
+                td( class='data' ) {{ dor.auths }}
 
         tfoot( class='not-body foot' )
             tr( class='row' )
@@ -29,31 +29,41 @@ import ProgressBar from ':src/components/UI/ProgressBar.vue'
 
 export default {
     components: { ProgressBar },
-    computed: { all },
+    computed: { dors, all },
+    methods: { getCity },
     data: function () {
         return {
-            dors: [
-                ['ВКГТУ', 'Усть-Каменогорск', 2456, 23, 14156],
-                ['КАРГУ', 'Караганда', 1245, 43, 54861],
-                ['СГРК', 'Семей', 6546, 61, 23156],
-                ['МГУ', 'Москва', 7685, 11, 14167],
-                ['СГПИ', 'Санкт-Петербугр', 2182, 23, 56441],
-                ['МУА', 'Нур-Султан (Астана)', 2253, 23, 54646],
-                ['ЕНУ', 'Нур-Султан (Астана)', 4223, 23, 4562]
-            ]
+            // dors: [
+            //     ['ВКГТУ', 'Усть-Каменогорск', 2456, 23, 14156],
+            //     ['КАРГУ', 'Караганда', 1245, 43, 54861],
+            //     ['СГРК', 'Семей', 6546, 61, 23156],
+            //     ['МГУ', 'Москва', 7685, 11, 14167],
+            //     ['СГПИ', 'Санкт-Петербугр', 2182, 23, 56441],
+            //     ['МУА', 'Нур-Султан (Астана)', 2253, 23, 54646],
+            //     ['ЕНУ', 'Нур-Султан (Астана)', 4223, 23, 4562]
+            // ]
         }
     }
+}
+
+function dors () {
+    return this.$store.state.list.dormitories
 }
 
 function all () {
     var count = 0
 
     if ( this.dors != undefined ) {
-        for (let dor of this.dors)
-            count += dor[4]
+        for (let dor in this.dors)
+            if ( this.dors.hasOwnProperty(dor) )
+                count += this.dors[dor].auths || 0
     } 
 
     return count
+}
+
+function getCity (city) {
+    return this.$store.state.list.cities[city]
 }
 </script>
 

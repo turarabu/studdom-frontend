@@ -1,17 +1,16 @@
 <template lang="pug">
-    button( class='button' :class='background' )
-        i( class='button-icon' :class='`icon-${icon}`' :style='{ top }' )
+    button( class='button' :class='background' v-bind='{ type }' )
+        i( v-if='icon' class='button-icon' :class='`icon-${icon}`' :style='{ top }' )
         span( class='button-text' ) {{ title }}
 </template>
 
 <script>
 export default {
-    props: ['icon', 'title', 'background', 'icon-top'],
+    props: ['type', 'icon', 'title', 'background', 'icon-top'],
     computed: { top }
 }
 
 function top () {
-    console.log(this)
     return this.iconTop || '0'
 }
 
@@ -33,6 +32,9 @@ function top () {
         color $white
     &.green
         background $green
+        color $white
+    &.red
+        background $red
         color $white
     
     .button-icon

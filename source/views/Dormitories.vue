@@ -1,19 +1,19 @@
 <template lang="pug">
     div#about
         div( v-if='dormitory === false' class='controls-div' )
-            Button( icon='plus' title='Добавить общежитие' background='blue' icon-top='2px' )
+            Button( icon='plus' title='Добавить общежитие' background='blue' icon-top='2px' @click.native='openModal(true)' )
             Button( icon='export-report' title='Выгрузить отчёт' background='green' )
 
         div( v-else class='controls-div' )
             div( class='block' )
                 router-link( tag='label' to='/dormitories' )
                     Button( icon='arrow-back' title='Назад к общежитиям' background='blue' icon-top='3px' )
-                span( class='current-der' ) Общежитие: ВКГТУ
+                span( class='current-der' ) Общежитие: {{ dors[dormitory].name }}
 
             div( class='block' )
                 input( class='datepicker' type='date' placeholder='C' )
                 input( class='datepicker' type='date' placeholder='По' )
-                Button( icon='edit' title='Редактировать' background='green' icon-top='1px' )
+                Button( icon='edit' title='Редактировать' background='green' icon-top='1px' @click.native='openModal(false)' )
 
         router-view
 </template>
@@ -23,8 +23,13 @@ import Button from ':src/components/UI/Button.vue'
 
 export default {
     components: { Button },
-    computed: { dormitory },
-    methods: { back }
+    computed: { dors, dormitory },
+    methods: { back, openModal },
+    mounted: start
+}
+
+function dors () {
+    return this.$store.state.list.dormitories
 }
 
 function dormitory () {
@@ -34,6 +39,30 @@ function dormitory () {
 function back () {
     console.log('back')
     this.$router.back()
+}
+
+function openModal (isNew) {
+    if ( isNew === true ) {
+        this.$store.commit('openModal', {
+            name: 'createDormitory',
+            data: {}
+        })
+    }
+
+    else {
+        this.$store.commit('openModal', {
+            name: 'createDormitory',
+            data: {
+                id: this.dormitory
+            }
+        })
+    }
+}
+
+async function start () {
+    var { data } = this.api.get('dormitory/list')
+
+    this.$store.commit('dormitories-set', data)
 }
 </script>
 

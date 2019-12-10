@@ -106,7 +106,7 @@ function start () {
         &.open
             box-shadow 0 0 3px darken($light-gray, 15)
             opacity 1
-            max-height 150px
+            max-height 195px
 
         .search-input
             border 1px solid lighten($light-gray, 10)

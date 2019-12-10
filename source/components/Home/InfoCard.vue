@@ -55,7 +55,7 @@ export default {
         font-size 32px
         margin 2px
 
-@media (min-width: 1600)
+@media (min-width: 1600px)
     .home-info-card
         border 1px solid #EEE
         border-radius 5px

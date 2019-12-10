@@ -3,7 +3,7 @@
 div#students
 
     div( class='controls-div' )
-            Button( icon='plus' title='Создать пользователя' background='blue' icon-top='2px' )
+            Button( icon='plus' title='Создать пользователя' background='blue' icon-top='2px' @click.native='addUser()' )
             input( class='user-search' placeholder='Поиск по имени...' v-model='search' )
 
     table( class='all-dormitories' )
@@ -15,11 +15,11 @@ div#students
                 th( class='data' ) Посещений
             
         tbody( class='body' )
-            tr( v-for='(user, id) in sorted' class='row' :key='id' )
-                td( class='data' ) {{ user[0] }}
-                td( class='data' ) {{ user[1] }}
-                td( class='data' ) {{ user[2] }}
+            tr( v-for='(user, id) in sorted' v-if='user' class='row' :key='id' @click='editUser(id)' :q='id' )
+                td( class='data' ) {{ user[0] }} {{ user[1] }}
                 td( class='data' ) {{ user[3] }}
+                td( class='data' ) {{ user[4] }}
+                td( class='data' ) {{ user[6] }}
 
         tfoot( class='not-body foot' )
             tr( class='row' )
@@ -32,48 +32,32 @@ import Button from ':src/components/UI/Button.vue'
 
 export default {
     components: { Button },
-    computed: { sorted, all },
+    computed: { last, sorted, all },
+    methods: { addUser, editUser },
+    mounted: start,
     data: function () {
         return {
+            lastU: 0,
             search: '',
             useDor: '',
-            users: [
-                ['Попов Машрал', 'Президент', 'Администратор', 324],
-                ['Алиев Берен', 'Зам. президент', 'Администратор', 234],
-                ['Султанов Ахан', 'IT Администратор', 'Управляющий', 121],
-                ['Амангельды Ордабай', 'Бухгалтер', 'Управляющий', 345],
-                ['Абдуллаев Кайыргали', 'IT Администратор', 'Управляющий', 243],
-                ['Ахметов Рашит', 'IT Администратор', 'Управляющий', 342],
-                ['Калиев Медеу', 'Специалист', 'Пользователь', 124],
-                ['Оспанов Мардан', 'Специалист', 'Пользователь', 123],
-                ['Амангельды Дандай', 'Специалист', 'Пользователь', 215],
-                ['Сулейменов Уали', 'Специалист', 'Пользователь', 142],
-                ['Амангельды Бахыт', 'Специалист', 'Пользователь', 214],
-                ['Сулейменов Нахып', 'Специалист', 'Пользователь', 124],
-                ['Каримов Монке', 'Специалист', 'Пользователь', 451],
-                ['Омаров Наби', 'Специалист', 'Пользователь', 683],
-                ['Смагулов Асан', 'Специалист', 'Пользователь', 214],
-                ['Искаков Азамат', 'Специалист', 'Пользователь', 351],
-                ['Калиев Шона', 'Специалист', 'Пользователь', 241],
-                ['Ибрагимов Сырым', 'Специалист', 'Пользователь', 335],
-                ['Садыков Бактияр', 'Специалист', 'Пользователь', 222],
-                ['Мурат Ахмет', 'Специалист', 'Пользователь', 453],
-                ['Каримов Нурпейіс', 'Специалист', 'Пользователь', 251],
-                ['Садыков Арыстан', 'Специалист', 'Пользователь', 345]
-            ]
+            users: this.$store.state.list.users
         }
     }
 }
 
+function last () {
+    return this.$store.state.last
+}
+
 function sorted () {
+    if ( this.lastU ) {}
+
     var list = []
 
-    console.log('sorted')
-
     if ( this.users != undefined )
-        this.users.forEach(user => {
+        this.users.forEach((user, index) => {
             if ( user[0].toLowerCase().search( this.search.toLowerCase() || '' ) > -1 )
-                list.push( user )
+                list[index] = user
         })
 
     return list
@@ -84,10 +68,35 @@ function all () {
 
     if ( this.sorted != undefined )
         this.sorted.forEach(user => {
-            count += user[3]
+            count += user[6] || 0
         })
 
     return count
+}
+
+function addUser () {
+    this.$store.commit('openModal', {
+        name: 'createUser',
+        data: {}
+    })
+}
+
+function editUser (id) {
+    var user = this.users[id]
+    var name = user[0].split(0)
+
+    this.$store.commit('openModal', {
+        name: 'createUser',
+        data: { id }
+    })
+}
+
+function start () {
+    this.$watch('last', (last) => {
+        this.users = this.$store.state.list.users
+        this.lastU = last
+        this.$forceUpdate()
+    })
 }
 </script>
 
