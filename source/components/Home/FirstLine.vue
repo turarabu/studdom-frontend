@@ -40,7 +40,7 @@ var screens = {
 
     1600: {
         height: 220,
-        width: 440,
+        width: 420,
         fSize: '18px',
         lWidth: 220
     }
@@ -54,7 +54,7 @@ export default {
 
 function start () {
     use = this.use
-    
+
     this.firstLevel2()
     this.firstLevel3()
 

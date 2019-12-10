@@ -224,7 +224,7 @@ function firstLevel3 () {
     justify-content space-between
 
     .block
-        width 33.3333%
+        width 33.3333% !important
 
 .diag-size-2
     align-items center
@@ -232,7 +232,7 @@ function firstLevel3 () {
     display flex
     justify-content center
     height 400px
-    width 66.6666%
+    width 66.6666% !important
 
 .diag-size-3
     border-bottom none !important

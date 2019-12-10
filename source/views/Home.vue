@@ -101,23 +101,36 @@ function start () {
 
 @media (min-width: 1600px)
     .diag-size-1
+        align-items center
+        border 1px solid $light-gray
+        border-right none
+        display flex
+        justify-content center
         height 240px !important
+        width 33.3333% 
+        &:last-child
+            border-right 1px solid $light-gray
+        &.texts
+            flex-direction column
 
         .home-data-line
+            align-items center
+            display flex
             margin 8px 0
+            justify-content space-between
             width 80%
 
             .key-title
                 color darken($light-gray, 35)
-                font-size 20px
+                font-size 20px !important
 
             .key-subtitle
                 color darken($light-gray, 15)
                 display block
-                font-size 14px
+                font-size 14px !important
 
             .value
-                font-size 24px
+                font-size 24px !important
                 font-weight 500
                 &.red
                     color $red
@@ -130,12 +143,12 @@ function start () {
             align-items flex-start
             display flex
             justify-content space-between
-            width 200px
+            width 200px !important
             &.title
-                font-size 18px
+                font-size 18px !important
                 font-weight 300
-                margin-top 14px
-                width 220px
+                margin-top 14px !important
+                width 220px !important
 
             .value
                 text-align right
