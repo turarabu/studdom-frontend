@@ -10,7 +10,7 @@ var pagesList = {
 }
 
 module.exports = {
-    publicPath: './',
+    publicPath: '/',
     pages: pagesList,
     filenameHashing: false,
     productionSourceMap: false,
