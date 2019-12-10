@@ -6,8 +6,8 @@
             InfoCard( class='blue arrows-rotate' icon='arrows' title='Авторизации' value=1 icon-top='4px' )
             InfoCard( class='purple' icon='reports' title='Отчёты' value=0 icon-top='8px' )
 
-        FirstLine
-        SecondLine
+        FirstLine( :use='use' )
+        SecondLine( :use='use' )
 </template>
 
 <script>
@@ -16,9 +16,20 @@ import FirstLine from ':src/components/Home/FirstLine.vue'
 import SecondLine from ':src/components/Home/SecondLine.vue'
 
 export default {
-    components: { InfoCard, FirstLine, SecondLine }
+    components: { InfoCard, FirstLine, SecondLine },
+    mounted: start,
+    data: function () {
+        return {
+            use: window.innerWidth >= 1600 ? 1600 : 1366
+        }
+    }
 }
 
+function start () {
+    window.onresize = () => {
+        this.use = window.innerWidth >= 1600 ? 1600 : 1366
+    }
+}
 </script>
 
 <style lang='stylus'>
@@ -41,7 +52,7 @@ export default {
         border-right none
         display flex
         justify-content center
-        height 240px
+        height 200px
         width 33.3333%
         &:last-child
             border-right 1px solid $light-gray
@@ -53,6 +64,47 @@ export default {
             display flex
             margin 8px 0
             justify-content space-between
+            width 80%
+
+            .key-title
+                color darken($light-gray, 35)
+                font-size 14px
+
+            .key-subtitle
+                color darken($light-gray, 15)
+                display block
+                font-size 14px
+
+            .value
+                font-size 14px
+                font-weight 500
+                &.red
+                    color $red
+                &.blue
+                    color $blue
+                &.purple
+                    color $purple
+
+        .legend-line
+            align-items flex-start
+            display flex
+            justify-content space-between
+            width 120px
+            &.title
+                font-size 12px
+                font-weight 300
+                margin-top 14px
+                width 140px
+
+            .value
+                text-align right
+
+@media (min-width: 1600px)
+    .diag-size-1
+        height 240px !important
+
+        .home-data-line
+            margin 8px 0
             width 80%
 
             .key-title
@@ -87,4 +139,5 @@ export default {
 
             .value
                 text-align right
+
 </style>

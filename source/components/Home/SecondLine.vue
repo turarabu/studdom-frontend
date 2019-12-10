@@ -30,15 +30,58 @@
 </template>
 
 <script>
+var use = 1600
+var screens = {
+    1366: {
+        height: 180,
+        width: 300,
+        fSize: '12px',
+        lWidth: 140
+    },
+
+    1600: {
+        height: 220,
+        width: 440,
+        fSize: '18px',
+        lWidth: 220
+    }
+}
+
+
+var screens2 = {
+    1366: {
+        height: 390,
+        width: 670,
+        fSize: '18px',
+        lWidth: 140
+    },
+
+    1600: {
+        height: 440,
+        width: 850,
+        fSize: '18px',
+        lWidth: 220
+    }
+}
 
 export default {
+    props: ['use'],
     methods: { firstLevel2, firstLevel3 },
     mounted: start
 }
 
 function start () {
+    use = this.use
+    
     this.firstLevel2()
     this.firstLevel3()
+
+    this.$watch('use', newUse => {
+        use = newUse
+
+        this.firstLevel2()
+        this.firstLevel3()
+    })
 }
 
 function firstLevel2 () {
@@ -53,8 +96,8 @@ function firstLevel2 () {
         },
         chart: {
             type: 'areaspline',
-            height: 450,
-            width: 860
+            height: screens2[use].height,
+            width: screens2[use].width
         },
 
         plotOptions: {
@@ -121,15 +164,15 @@ function firstLevel3 () {
             align: 'right',
             labelFormat: '<span class="legend-line"><span>{name}</span> <span class="value">{percentage:.2f}%</span></span>',
             verticalAlign: 'middle',
-            width: 220,
+            width: screens[use].lWidth,
             title: {
                 text: '<span class="legend-line title"><span>Общежитие</span> <span class="value">Посещений</span></span>'
             },
             itemStyle: {
                 display: 'inline-block',
-                fontSize: '18px',
+                fontSize: screens[use].fSize,
                 fontWeight: 400,
-                width: 200
+                width: screens[use].lWidth
             }
         },
         chart: {
@@ -137,8 +180,8 @@ function firstLevel3 () {
             plotBorderWidth: null,
             plotShadow: false,
             type: 'pie',
-            height: 200,
-            width: 420,
+            height: screens[use].height,
+            width: screens[use].width
         },
         plotOptions: {
             pie: {
@@ -188,7 +231,7 @@ function firstLevel3 () {
     border 1px solid $light-gray
     display flex
     justify-content center
-    height 480px
+    height 400px
     width 66.6666%
 
 .diag-size-3
@@ -197,4 +240,10 @@ function firstLevel3 () {
     width 100% !important
     &:last-child
         border-bottom 1px solid $light-gray !important
+
+@media (min-width: 1600px)
+
+    .diag-size-2
+        height 480px
+    
 </style>
