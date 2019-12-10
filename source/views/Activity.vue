@@ -138,16 +138,16 @@ function start () {
         margin-top 32px
 
     .search-list-div
-        width 382px
+        min-width 322px
 
     .block
-        width 380px
+        width 320px
 
     .block-title
         background lighten($light-gray, 15)
         color darken($light-gray, 50)
         border-radius 5px
-        font-size 24px
+        font-size 18px
         font-weight 400
         margin-bottom 6px
         padding 18px 0
@@ -171,4 +171,16 @@ function start () {
         .datepicker--cell.-in-range-
             background RGBA(92, 196, 239, .25)
         
+@media (min-width: 1600px)
+    #activity
+
+        .block-title
+            font-size 24px
+
+        .search-list-div
+            min-width 382px
+
+        .block
+            width 380px
+
 </style>
