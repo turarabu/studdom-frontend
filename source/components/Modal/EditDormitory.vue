@@ -1,7 +1,7 @@
 <template lang='pug'>
 
     div#create-dormitory( class='modal' )
-        h3( class='modal-title' ) Создание общежития
+        h3( class='modal-title' ) Редактирование общежития
 
         form#form( class='blocks-div' @submit='save' )
             div( class='inputs-div' )
@@ -9,8 +9,8 @@
                 Select( class='create-input' placeholder='Город' :list='cities' v-model='dormitory.city' )
                 InputText( class='create-input' placeholder='Вместимость (Человек)' pattern='[0-9]{1,6}' v-model='dormitory.capacity' )
                 InputText( class='create-input' placeholder='Координаты (Широта, Долгота)' v-model='dormitory.coordinates' )
-                InputText( class='create-input' placeholder='Логин пользователя' v-model='dormitory.login' )
-                InputText( class='create-input' type='password' placeholder='Пароль пользователя' v-model='dormitory.password' )
+                InputText( class='create-input' disabled placeholder='Логин пользователя' v-model='dormitory.login' )
+                InputText( class='create-input' type='password' placeholder='Новый пароль пользователя' v-model='dormitory.password' )
 
             div( class='turns-div' )
                 p( class='turns-title' ) Турникеты
@@ -32,7 +32,7 @@
 
         div( class='buttons-div' )
             Button( title='Отменить' background='red' icon-top='2px' @click.native='cancel' )
-            Button( icon='create' title='Создать' background='green' icon-top='2px' @click.native='save' )
+            Button( icon='create' title='Сохранить' background='green' icon-top='2px' @click.native='save' )
                 
 
 </template>
@@ -47,15 +47,23 @@ export default {
     props: ['id', 'data'],
     components: { InputText, Select, Button },
     computed: { cities },
-    methods: { defaults, save, cancel },
+    methods: { save, cancel },
     data: function () {
+        function getCoordinates (coordinates) {
+            if ( coordinates.x === undefined )
+                return coordinates
+
+            else return `${coordinates.x}, ${coordinates.y}`
+        }
+
         return {
             dormitory: {
-                name: '',
-                city: false,
-                capacity: '',
-                coordinates: '',
-                login: '',
+                code: this.data.code,
+                name: this.data.name,
+                city: this.data.city,
+                capacity: this.data.capacity || this.data.limit,
+                coordinates: getCoordinates(this.data.coordinates),
+                login: this.data.login,
                 password: ''
             }
         }
@@ -72,31 +80,27 @@ function cities () {
     return list
 }
 
-function defaults () {
-    return {
-        name: '',
-        city: false,
-        capacity: '',
-        coordinates: '',
-        login: '',
-        password: ''
-    }
-}
-
 async function save (event) {
     if ( event && event.preventDefault )
         event.preventDefault()
 
-    let empty = Object.keys(this.dormitory).find(key => {
-        return this.dormitory[key] == false
+    console.log(this.dormitory)
+
+    let post = JSON.parse( JSON.stringify(this.dormitory) )
+    let empty = Object.keys(post).find(key => {
+        if ( key === 'password' && post[key] == false ) {
+            delete post[key]
+            return false
+        }
+        
+        return post[key] == false
     })
 
     if ( empty === undefined ) {
-        let { data, success } = await this.api.post('dormitory/create', this.dormitory)
+        let { data, success } = await this.api.post('dormitory/update', post)
 
         if ( success === true ) {
             this.$store.commit('dormitories-set', data)
-            this.dormitory = this.defaults()
             
             return this.$store.commit("closeModal", this.id)
         }

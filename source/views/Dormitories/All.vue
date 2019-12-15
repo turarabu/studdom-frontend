@@ -10,13 +10,13 @@
                 th( class='data' ) Посещений
             
         tbody( class='body' )
-            router-link( v-for='(dor, id) of dors' tag='tr' class='row' :to='`/dormitories/id/${id}`' :key='id' )
+            router-link( v-for='(dor, id) of dors' tag='tr' class='row' :to='`/dormitories/id/${dor.code}`' :key='id' )
                 td( class='data' ) {{ dor.name }}
                 td( class='data' ) {{ getCity(dor.city) }}
-                td( class='data' ) {{ dor.students }}
+                td( class='data' ) {{ getCount(dor.students) }}
                 td( class='data' )
                     ProgressBar( :value='dor.activity' )
-                td( class='data' ) {{ dor.auths }}
+                td( class='data' ) {{ getCount(dor.signs) }}
 
         tfoot( class='not-body foot' )
             tr( class='row' )
@@ -30,7 +30,7 @@ import ProgressBar from ':src/components/UI/ProgressBar.vue'
 export default {
     components: { ProgressBar },
     computed: { dors, all },
-    methods: { getCity },
+    methods: { getCity, getCount },
     data: function () {
         return {
             // dors: [
@@ -47,7 +47,7 @@ export default {
 }
 
 function dors () {
-    return this.$store.state.list.dormitories
+    return this.$store.state.dormitories.list
 }
 
 function all () {
@@ -63,7 +63,14 @@ function all () {
 }
 
 function getCity (city) {
-    return this.$store.state.list.cities[city]
+    return this.$store.state.cities.find(c => c.code === city).name
+}
+
+function getCount(subject) {
+    if ( subject.length === undefined )
+        return subject
+    
+    else return subject.length
 }
 </script>
 

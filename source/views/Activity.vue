@@ -2,7 +2,7 @@
     div#activity
         div( class='first-line' )
             div( class='block' )
-                SearchList( v-bind='{ list }' v-model='useDor' )
+                SearchList( v-bind='{ list: dormitories }' v-model='useDor' )
                 div#calendar
 
             div( class='block' )
@@ -29,6 +29,7 @@ import DailyActivity from ':src/components/Activity/Daily.vue'
 
 export default {
     components: { SearchList, DailyActivity },
+    computed: { dormitories },
     mounted: start,
     data: function () {
         return {
@@ -37,6 +38,17 @@ export default {
             list: ['ВКГТУ', 'КАРГУ', 'СГРК', 'ЕНУ', 'КАЗНУ', 'ЮКГУ']
         }
     }
+}
+
+function dormitories () {
+    var list = []
+
+    this.$store.state.dormitories.list.forEach(dormitory => {
+        list.push(dormitory.name)
+    })
+
+    console.log(list)
+    return  list
 }
 
 function start () {

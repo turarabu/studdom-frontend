@@ -5,68 +5,46 @@
             span( class='tab' :class='{ active: active === 1 }' @click='active = 1' ) Авторизации
             span( class='tab' :class='{ active: active === 2 }' @click='active = 2' ) Активность турникетов
 
-        Table( :table='tables[active]' )
+        StudentsTable( v-if='active === 0' v-bind='{ dormitory }' )
+        SignsTable( v-if='active === 1' v-bind='{ dormitory }' )
+        TurnstilesTable( v-if='active === 2' v-bind='{ dormitory }' )
 </template>
 
 <script>
-import Table from ':src/components/Dormitories/Table.vue'
+import StudentsTable from ':src/components/Dormitories/Tables/Students.vue'
+import SignsTable from ':src/components/Dormitories/Tables/Signs.vue'
+import TurnstilesTable from ':src/components/Dormitories/Tables/Turnstile.vue'
 
 export default {
-    components: { Table },
+    components: { StudentsTable, SignsTable, TurnstilesTable },
+    computed: { dormitory },
+    mounted: start,
     data: function () {
         return {
-            active: 0,
-            tables: [
-                {
-                    head: [{ value: 'ФИО' }, { value: 'Дата и время' }, { value: 'ИИН' }],
-                    body: [
-                        [{ value: 'Аманжолов Бахтияр'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }],
-                        [{ value: 'Сериков Асет'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }],
-                        [{ value: 'Жапарханов Алибек'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }],
-                        [{ value: 'Мансуров Женис'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }],
-                        [{ value: 'Алабаев Максат'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }],
-                        [{ value: 'Жуспеков Жангур'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }],
-                        [{ value: 'Алибеков Жасулан'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }]
-                    ]
-                },
-
-                {
-                    head: [{ value: 'ФИО' }, { value: 'Дата и время' }, { value: 'ИИН' }, { value: 'Турникет' }],
-                    body: [
-                        [{ value: 'Аманжолов Бахтияр'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Сериков Асет'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Жапарханов Алибек'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Мансуров Женис'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Алабаев Максат'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Жуспеков Жангур'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Аманжолов Бахтияр'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Сериков Асет'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Жапарханов Алибек'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Мансуров Женис'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Алабаев Максат'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Жуспеков Жангур'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Аманжолов Бахтияр'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Сериков Асет'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Жапарханов Алибек'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Мансуров Женис'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Алабаев Максат'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Жуспеков Жангур'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }],
-                        [{ value: 'Алибеков Жасулан'}, { value: '25-12-2019 в 14:22' }, { value: '456145616551' }, { value: 'Главный вход' }]
-                    ]
-                },
-
-                {
-                    head: [{ value: 'Название' }, { value: 'Статус' }, { value: 'Дата и время последней авторизации' }],
-                    body: [
-                        [{ value: 'Главный вход'}, { value: 'Активный' }, { value: '25-12-2019 в 14:22' }],
-                        [{ value: 'Черный вход'}, { value: 'Активный' }, { value: '25-12-2019 в 14:22' }],
-                        [{ value: 'Боковой вход'}, { value: 'Активный' }, { value: '25-12-2019 в 14:22' }],
-                        [{ value: 'Боковой вход 2'}, { value: 'Отключен' }, { value: '11-10-2019 в 14:22' }],
-                        [{ value: 'Вход со спортплощадка'}, { value: 'Активный' }, { value: '25-12-2019 в 14:22' }]
-                    ]
-                }
-            ]
+            active: 0
         }
+    }
+}
+
+function dormitory () {
+    for ( let dormitory of this.$store.state.dormitories.list ) {
+        if ( dormitory.code === this.$route.params.id )
+            return dormitory
+    }
+}
+
+async function start () {
+    var id = this.$route.params.id
+    var dormitory = this.dormitory
+
+    if ( dormitory.detailsLoaded === undefined ) {
+        var { data } = await this.api.get('dormitory/details', { dormitory: dormitory.code })
+
+        data.id = id
+        data.detailsLoaded = true
+
+        this.$store.commit('students-add', data.students)
+        this.$store.commit('dormitories-update', data)
     }
 }
 </script>
@@ -95,4 +73,43 @@ export default {
             &.active
                 border 1px solid $light-gray
                 border-bottom 1px solid $white
+
+    .dormitories-table
+        border-collapse collapse
+        margin 42px 0
+        width 100%
+
+        .not-body
+            &.head
+                border-bottom 1px solid $light-gray
+            &.foot
+                border-top 1px solid $light-gray
+
+                .data
+                    padding-top 4px
+
+            .data
+                font-weight 500
+                padding 8px 12px
+
+        .body
+            &:before, &:after
+                content ''
+                display block
+                height 8px
+
+            .data:last-child
+                font-weight 500
+
+            .row
+                cursor pointer
+                &:hover
+                    background lighten($light-gray, 25)
+
+        .data
+            font-size 24px   
+            padding 4px 12px
+            text-align left
+            &:last-child
+                text-align right
 </style>

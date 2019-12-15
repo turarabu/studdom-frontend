@@ -15,7 +15,7 @@
         router-link( tag='a' class='link' active-class='active' to='/students' )
             span( class='icon icon-student' )
             span Студенты
-        router-link( tag='a' class='link' active-class='active' to='/users' )
+        router-link( v-if='canUserEdit' tag='a' class='link' active-class='active' to='/users' )
             span( class='icon icon-users' )
             span Пользователи
         router-link( tag='a' class='link' active-class='active' to='/records' )
@@ -28,7 +28,12 @@
 
 <script>
 export default {
+    computed: { canUserEdit },
     created: start
+}
+
+function canUserEdit () {
+    return this.$store.state.user.data.type === 'admin'
 }
 
 function start () {

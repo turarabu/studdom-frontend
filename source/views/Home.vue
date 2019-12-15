@@ -1,9 +1,9 @@
 <template lang="pug">
     div#home
         div( class='cards-div' )
-            InfoCard( class='red' icon='bed' title='Общежитий' value=6 icon-top='8px' )
+            InfoCard( class='red' icon='bed' title='Общежитий' :value='dormitories.length' icon-top='8px' )
             InfoCard( class='green' icon='student' title='Студентов' value=1 icon-top='8px' )
-            InfoCard( class='blue arrows-rotate' icon='arrows' title='Авторизации' value=1 icon-top='4px' )
+            InfoCard( class='blue arrows-rotate' icon='arrows' title='Авторизации' :value='allSigns' icon-top='4px' )
             InfoCard( class='purple' icon='reports' title='Отчёты' value=0 icon-top='8px' )
 
         FirstLine( :use='use' )
@@ -17,12 +17,28 @@ import SecondLine from ':src/components/Home/SecondLine.vue'
 
 export default {
     components: { InfoCard, FirstLine, SecondLine },
+    computed: { dormitories, allSigns },
     mounted: start,
     data: function () {
         return {
             use: window.innerWidth >= 1600 ? 1600 : 1366
         }
     }
+}
+
+function dormitories () {
+    return this.$store.state.dormitories.list
+}
+
+function allSigns () {
+    var dormitories = JSON.parse( JSON.stringify(this.$store.state.dormitories.list))
+    var count = 0
+
+    dormitories.forEach(dormitory => {
+        count += dormitory.signs
+    })
+
+    return count
 }
 
 function start () {

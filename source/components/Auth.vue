@@ -27,13 +27,25 @@ import Checkbox from ':src/components/Auth/Checkbox.vue'
 
 export default {
     components: { Checkbox },
-    methods: { signIn },
+    methods: { loadData, signIn },
     data: function () {
         return {
             login: '',
             password: '',
             saveMe: false
         }
+    }
+}
+
+async function loadData () {
+    if ('cities') {
+        let { data } = await this.api.get('city/list')
+        this.$store.commit('cities-set', data)
+    }
+
+    if ('dormitories') {
+        let { data } = await this.api.get('dormitory/list')
+        this.$store.commit('dormitories-set', data)
     }
 }
 
@@ -46,10 +58,11 @@ async function signIn (event) {
     }
 
     var { status, data } = await this.api.post('user/sign-in', data)
-    console.log(status, data)
 
-    if ( status === 200 )
+    if ( status === 200 ) {
         this.$store.commit('user-set', data)
+        this.loadData()
+    }
 }
 
 </script>

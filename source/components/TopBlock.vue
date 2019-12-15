@@ -14,16 +14,24 @@
             div( class='menu' :class='{ active: showMenu }' )
                 span( class='link' )
                     span( class='icon icon-exit' )
-                    span Выйти
+                    span( @click='quit' ) Выйти
 </template>
 
 <script>
 export default {
+    methods: { quit },
     data: function () {
         return {
             showMenu: false
         }
     }
+}
+
+async function quit () {
+    var { success } = await this.api.get('user/quit')
+
+    if ( success === true )
+        this.$store.commit('user-quit')
 }
 </script>
 
@@ -113,14 +121,19 @@ export default {
             max-height 0
             opacity 0
             overflow hidden
-            padding 0 16px
             position absolute
             top 100%
             left 0
             width calc(100%)
             &.active
                 box-shadow 0 2px 2px $light-gray
-                padding 16px
                 max-height 500px
                 opacity 1
+
+            .link
+                cursor pointer
+                display block
+                padding 16px
+                &:hover
+                    background lighten($light-gray, 25)
 </style>

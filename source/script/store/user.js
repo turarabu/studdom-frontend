@@ -1,11 +1,15 @@
 export default {
     state: {
-        status: true,
-        data: {}
+        status: false,
+        data: {},
+        list: []
     },
+    
     mutations: {
         'user-set': set,
-        'user-quit': quit
+        'user-quit': quit,
+
+        'users-list-set': setList
     }
 }
 
@@ -17,4 +21,8 @@ function set (state, user) {
 function quit (state) {
     state.status = false
     state.data = {}
+}
+
+function setList (state, list) {
+    state.list = list
 }

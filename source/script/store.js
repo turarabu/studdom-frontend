@@ -3,29 +3,25 @@ import Vuex from 'vuex'
 
 import user from './store/user'
 import dormitories from './store/dormitories'
+import students from './store/students'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+export default {
+    modules: { user, dormitories, students },
     state: {
-        last: new Date(),
+        cities: {},
         modals: [],
-        list: {
-            users: usersList(),
-            dormitories: dormitoriesList(),
-            cities: citiesList()
-        }
     },
 
-    mutations: { editList, pushList, openModal, closeModal },
-    actions: { },
-    modules: { user, dormitories }
-})
+    mutations: {
+        openModal, closeModal,
+        'cities-set': setCities
+    },
+}
 
-function editList (state, data) {
-    state.list[data.list][ data.id ] = data.value
-    state.last = new Date()
-    // console.log( state.list[data.list][ data.id ] )
+function setCities (state, list) {
+    state.cities = list
 }
 
 function pushList (state, data) {
@@ -86,67 +82,67 @@ function citiesList () {
 
 function dormitoriesList () {
     return {
-        '0': {
-            name: 'ВКГТУ',
-            city: 'uskg',
-            students: 2456,
-            activity: 23,
-            auths: 14156,
-            max: 10000
-        },
+        // '0': {
+        //     name: 'ВКГТУ',
+        //     city: 'uskg',
+        //     students: 2456,
+        //     activity: 23,
+        //     auths: 14156,
+        //     max: 10000
+        // },
 
-        '1': {
-            name: 'КАРГУ',
-            city: 'krg',
-            students: 1245,
-            activity: 34,
-            auths: 54861,
-            max: 10000
-        },
+        // '1': {
+        //     name: 'КАРГУ',
+        //     city: 'krg',
+        //     students: 1245,
+        //     activity: 34,
+        //     auths: 54861,
+        //     max: 10000
+        // },
 
-        '2': {
-            name: 'СГРК',
-            city: 'sm',
-            students: 6546,
-            activity: 13,
-            auths: 23156,
-            max: 10000
-        },
+        // '2': {
+        //     name: 'СГРК',
+        //     city: 'sm',
+        //     students: 6546,
+        //     activity: 13,
+        //     auths: 23156,
+        //     max: 10000
+        // },
 
-        '3': {
-            name: 'МГУ',
-            city: 'msk',
-            students: 7685,
-            activity: 1,
-            auths: 14167,
-            max: 10000
-        },
+        // '3': {
+        //     name: 'МГУ',
+        //     city: 'msk',
+        //     students: 7685,
+        //     activity: 1,
+        //     auths: 14167,
+        //     max: 10000
+        // },
 
-        '4': {
-            name: 'СГПИ',
-            city: 'spbg',
-            students: 2182,
-            activity:23,
-            auths: 56441,
-            max: 10000
-        },
+        // '4': {
+        //     name: 'СГПИ',
+        //     city: 'spbg',
+        //     students: 2182,
+        //     activity:23,
+        //     auths: 56441,
+        //     max: 10000
+        // },
 
-        '5': {
-            name: 'МУА',
-            city: 'astn',
-            students: 2253,
-            activity:23,
-            auths: 54646,
-            max: 10000
-        },
+        // '5': {
+        //     name: 'МУА',
+        //     city: 'astn',
+        //     students: 2253,
+        //     activity:23,
+        //     auths: 54646,
+        //     max: 10000
+        // },
 
-        '6': {
-            name: 'ЕНУ',
-            city: 'astn',
-            students: 4223,
-            activity:23,
-            auths: 4562,
-            max: 10000
-        }
+        // '6': {
+        //     name: 'ЕНУ',
+        //     city: 'astn',
+        //     students: 4223,
+        //     activity:23,
+        //     auths: 4562,
+        //     max: 10000
+        // }
     }
 }

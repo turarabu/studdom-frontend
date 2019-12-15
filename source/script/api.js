@@ -1,7 +1,7 @@
 export default { install }
 
-const host = 'localhost'
-const port = 8000
+const host = 'api.studdom.host'
+const port = 80
 
 function install (Vue) {
     Vue.prototype.api = { get, post }
@@ -9,40 +9,41 @@ function install (Vue) {
 
 function get (path, data = {}) {
     var query = getQuery(data)
-
-    return new Promise(async resolve => {
-        var request = await fetch(`http://${host}:${port}/${path}?${query}`)
-        var response = await request.json()
-
-        resolve({
-            status: request.status,
-            headers: request.headers,
-
-            data: response.data,
-            error: response.error,
-            success: response.success
-        })
+    var response = request(`http://${host}:${port}/${path}?${query}`, {
+        method: 'GET'
     })
+
+    return typeResponse(response)
 }
 
 function post (path, data = {}) {
     var body = getFormData(data)
+    var response = request(`http://${host}:${port}/${path}`, {
+        body,
+        method: 'POST'
+    })
 
+    return typeResponse(response)
+}
+
+function request (url, options) {
+    return fetch(url, Object.assign(options, {
+        credentials: 'include'
+    }))
+}
+
+function typeResponse (request) {
     return new Promise(async resolve => {
-        var request = await fetch(`http://${host}:${port}/${path}`, {
-            body,
-            method: 'POST'
-        })
-
-        var response = await request.json()
+        var response = await request
+        var json = await response.json()
 
         resolve({
-            status: request.status,
-            headers: request.headers,
+            status: response.status,
+            headers: response.headers,
 
-            data: response.data,
-            error: response.error,
-            success: response.success
+            data: json.data,
+            error: json.error,
+            success: json.success
         })
     })
 }

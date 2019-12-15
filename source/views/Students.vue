@@ -3,8 +3,7 @@
 div#students
 
     div( class='controls-div' )
-        span 
-        SearchList( v-bind='{ list }' v-model='useDor' )
+        SearchList( v-bind='{ list: getDNames() }' v-model='searchBy.dormitory' )
 
     table( class='all-dormitories' )
         thead( class='not-body head' )
@@ -16,18 +15,19 @@ div#students
                 th( class='data' ) Посещений
             
         tbody( class='body' )
-            tr( v-for='(stud, id) in sorted' class='row' :key='id' )
-                td( class='data' ) {{ stud[0] }}
-                td( class='data' ) {{ stud[1] }}
-                td( class='data' ) {{ stud[2] }}
+            tr( v-for='(student, id) in sorted' class='row' :key='id' )
+                td( class='data' ) {{ student.lastName }} {{ student.firstName }}
+                td( class='data' ) {{ getDormitory(student.dormitory) }}
+                td( class='data' ) {{ toDate(student.signUp) }}
                 td( class='data' )
-                    Switcher( :value='stud[4]' )
-                td( class='data' ) {{ stud[4] }}
+                    Switcher( @input='setStatus(student.iin, $event)' :value='student.active' )
+                td( class='data' ) {{ student.signs }}
 
         tfoot( class='not-body foot' )
             tr( class='row' )
                 th( class='data' colspan='4' ) Всего
                 td( class='data' ) {{ all }}
+
 </template>
 
 <script>
@@ -36,48 +36,62 @@ import Switcher from ':src/components/UI/Switcher.vue'
 import SearchList from ':src/components/UI/SearchList.vue'
 
 export default {
+    name: 'Students',
     components: { Button, Switcher, SearchList },
-    computed: { all, sorted, list },
+    computed: { students, dormitories, all, sorted },
+    methods: { setStatus, getDormitory, getDNames, toDate },
+    beforeCreate: init,
+    mounted: start,
     data: function () {
         return {
-            useDor: '',
-            studs: [
-                ['Амантай Аубакиров', 'ВКГТУ', '25-12-2019', true, 4213],
-                ['Калиев Жарылкасын', 'ВКГТУ', '25-12-2019', true, 1241],
-                ['Попов Машрал', 'ВКГТУ', '25-12-2019', true, 3242],
-                ['Алиев Берен', 'ВКГТУ', '25-12-2019', true, 2341],
-                ['Султанов Ахан', 'ВКГТУ', '25-12-2019', true, 1251],
-                ['Амангельды Ордабай', 'ВКГТУ', '25-12-2019', true, 3451],
-                ['Абдуллаев Кайыргали', 'ВКГТУ', '25-12-2019', true, 2431],
-                ['Ахметов Рашит', 'ВКГТУ', '25-12-2019', true, 3412],
-                ['Калиев Медеу', 'ВКГТУ', '25-12-2019', true, 1324],
-                ['Оспанов Мардан', 'ВКГТУ', '25-12-2019', true, 1243],
-                ['Амангельды Дандай', 'ЕНУ', '25-12-2019', true, 2145],
-                ['Сулейменов Уали', 'ЕНУ', '25-12-2019', true, 1422],
-                ['Амангельды Бахыт', 'ЕНУ', '25-12-2019', true, 2144],
-                ['Сулейменов Нахып', 'ЕНУ', '25-12-2019', true, 1244],
-                ['Каримов Монке', 'ВКГТУ', '25-12-2019', true, 4512],
-                ['Омаров Наби', 'ВКГТУ', '25-12-2019', true, 6831],
-                ['Смагулов Асан', 'ВКГТУ', '25-12-2019', true, 2154],
-                ['Искаков Азамат', 'ВКГТУ', '25-12-2019', true, 3541],
-                ['Калиев Шона', 'ВКГТУ', '25-12-2019', true, 2414],
-                ['Ибрагимов Сырым', 'ВКГТУ', '25-12-2019', true, 3351],
-                ['Садыков Бактияр', 'ВКГТУ', '25-12-2019', true, 2522],
-                ['Мурат Ахмет', 'ВКГТУ', '25-12-2019', true, 4531],
-                ['Каримов Нурпейіс', 'ВКГТУ', '25-12-2019', true, 2541],
-                ['Садыков Арыстан', 'ВКГТУ', '25-12-2019', true, 3452]
-            ]
+            searchBy: {
+                dormitory: '',
+                dormitoryCode: ''
+            }
         }
     }
+}
+
+function init () {
+    if ( this.$store.state.students.loaded === false )
+        (async () => {
+            var { data } = await this.api.get('student/all')
+
+            this.$store.commit('students-set', data)
+            this.$store.commit('students-loaded', true)
+        })()
+
+    if ( this.$store.state.dormitories.loaded === false )
+        (async () => {
+            var { data } = await this.api.get('dormitory/list')
+
+            this.$store.commit('dormitories-set', data)
+            this.$store.commit('dormitories-loaded', true)
+            this.$forceUpdate()
+        })()
+}
+
+function students () {
+    return this.$store.state.students.list
+}
+
+function dormitories () {
+    var list = []
+
+    this.$store.state.dormitories.list.forEach(dormitory => {
+        list.push(dormitory)
+    })
+
+    return list
 }
 
 function sorted () {
     var list = []
 
-    if ( this.studs != undefined )
-        this.studs.forEach(stud => {
-            if ( stud[1].startsWith(this.useDor || '') )
-                list.push(stud)
+    if ( this.students != undefined )
+        this.students.forEach(studend => {
+            if ( studend.dormitory.startsWith(this.searchBy.dormitoryCode || '') )
+                list.push(studend)
         })
 
     return list
@@ -87,23 +101,74 @@ function all () {
     var count = 0
 
     if ( this.sorted != undefined )
-        this.sorted.forEach(stud => {
-            count += stud[4]
+        this.sorted.forEach(studend => {
+            count += studend.signs
         })
 
     return count
 }
 
-function list () {
-    var all = []
+async function setStatus (student, { value, lock }) {
+    lock(true)
 
-    if ( this.studs != undefined )
-        this.studs.forEach(stud => {
-            if ( all.includes( stud[1] ) === false )
-                all.push( stud[1] )
+    var { success } = await this.api.post('student/set', {
+        iin: student,
+        active: value
+    })
+
+    if ( success === true ) {
+        this.$store.commit('student-update', {
+            iin: student,
+            assign: {
+                active: value
+            }
         })
 
-    return all
+        return lock(false)
+    }
+}
+
+function getDormitory (code) {
+    if ( this.dormitories == undefined )
+        return ''
+    
+    for ( let dormitory of this.dormitories ) {
+        if ( dormitory.code === code ) {
+            return dormitory.name
+        }
+    }
+}
+
+function getDNames () {
+    var list = []
+
+    this.dormitories.forEach(dormitory => {
+        list.push(dormitory.name)
+    })
+
+    return list
+}
+
+function toDate (string) {
+    return new Date(string).toLocaleDateString('ru', {
+        year: 'numeric',
+        day: 'numeric',
+        month: 'long',
+        hour: 'numeric',
+        minute: 'numeric'
+    }).replace(' г.', '')
+}
+
+function start () {
+    this.$watch('searchBy.dormitory', name => {
+        if ( name === '' )
+            return this.searchBy.dormitoryCode = ''
+
+        else for ( let dormitory of this.dormitories ) {
+            if ( dormitory.name == name )
+                return this.searchBy.dormitoryCode = dormitory.code
+        }
+    })
 }
 </script>
 

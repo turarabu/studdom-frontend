@@ -3,10 +3,13 @@
         AuthPage( v-if='user.status === false' )
         Dashboard( v-else )
 
-        div( id='modals-div' v-if='modals.length > 0' @click='checkClose' )
+        div#modals-div( v-if='modals.length > 0' @click='checkClose' )
             div( v-for='(modal, id) in modals' :key='id' )
                 ModalCreateUser( v-if='modal.name == "createUser"' v-bind='{ id, data: modal.data }' )
                 ModalCreateDormitory( v-if='modal.name == "createDormitory"' v-bind='{ id, data: modal.data }' )
+                
+                ModalEditDormitory( v-if='modal.name == "editDormitory"' v-bind='{ id, data: modal.data }' )
+                ModalEditUser( v-if='modal.name == "editUser"' v-bind='{ id, data: modal.data }' )
 
 
 </template>
@@ -18,19 +21,38 @@ import Dashboard from ':src/components/Dashboard.vue'
 import ModalCreateUser from ':src/components/Modal/CreateUser.vue'
 import ModalCreateDormitory from ':src/components/Modal/CreateDormitory.vue'
 
+import ModalEditDormitory from ':src/components/Modal/EditDormitory.vue'
+import ModalEditUser from ':src/components/Modal/EditUser.vue'
+
 export default {
-    components: { AuthPage, Dashboard, ModalCreateUser, ModalCreateDormitory },
+    components: { AuthPage, Dashboard, ModalCreateUser, ModalCreateDormitory, ModalEditDormitory, ModalEditUser },
     computed: { user, modals },
-    methods: { checkClose },
+    methods: { loadData, checkClose },
     mounted: start
 }
 
 function user () {
+    console.log('123')
+    console.log(this.$store.state.user)
     return this.$store.state.user
 }
 
 function modals () {
     return this.$store.state.modals
+}
+
+async function loadData () {
+    if ('cities') {
+        let { data } = await this.api.get('city/list')
+        this.$store.commit('cities-set', data)
+    }
+
+    if ('dormitories') {
+        let { data } = await this.api.get('dormitory/list')
+        this.$store.commit('dormitories-set', data)
+    }
+
+    return true
 }
 
 function checkClose (event) {
@@ -39,13 +61,17 @@ function checkClose (event) {
 }
 
 async function start () {
-    return
-    var { status, data } = await this.api.get('user/profile')
+    if ('user') {
+        let { data } = await this.api.get('user/profile')
 
-    if ( data.login )
-        this.$store.commit('user-set', data)
-    
-    else this.$store.commit('user-quit')
+        if ( data.login ) {
+            await this.loadData()
+            this.$store.commit('user-set', data)
+            this.$router.push('/')
+        }
+
+        else this.$store.commit('user-quit')
+    }
 }
 </script>
 
@@ -67,4 +93,13 @@ async function start () {
     left 0
     width 100%
     z-index 100
+
+    .modal
+        background $white
+        border-radius 5px
+        box-shadow 0 0 15px RGBA(50, 50, 50, .5)
+
+        .modal-title
+            font-size 20px
+            font-weight 500
 </style>

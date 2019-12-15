@@ -12,13 +12,13 @@
                     span( class='key-title' ) Рост посещений
                         span( class='key-subtitle' ) За месяц
 
-                    span( class='value red' ) +1
+                    span( class='value red' ) +{{ allSigns() }}
 
                 div( class='home-data-line' )
                     span( class='key-title' ) Посещений
                         span( class='key-subtitle' ) Студента в среднем за месяц
 
-                    span( class='value purple' ) 1
+                    span( class='value purple' ) {{ allSigns() }}
 
             div( class='diag-size-1 diag-size-3' )
                 figure( class='highcharts-figure' )
@@ -66,8 +66,13 @@ var screens2 = {
 
 export default {
     props: ['use'],
-    methods: { firstLevel2, firstLevel3 },
-    mounted: start
+    methods: { getSigns, allSigns, getByDays, firstLevel2, firstLevel3 },
+    mounted: start,
+    data: function () {
+        return {
+            byDate: false
+        }
+    }
 }
 
 function start () {
@@ -84,7 +89,9 @@ function start () {
     })
 }
 
-function firstLevel2 () {
+async function firstLevel2 () {
+    var series = await this.getByDays('month')
+
     Highcharts.chart('second-level-2', {
         title: { text: 'Динамика авторизации за месяц' },
         subtitle: { text: new Date().toLocaleDateString('ru', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric'}) },
@@ -94,6 +101,7 @@ function firstLevel2 () {
         exporting: {
             buttons: { contextButton: { enabled: false } }
         },
+        
         chart: {
             type: 'areaspline',
             height: screens2[use].height,
@@ -142,7 +150,7 @@ function firstLevel2 () {
 
         series: [{
             name: 'Авторизации',
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+            data: series
         }]
     })
 }
@@ -192,25 +200,67 @@ function firstLevel3 () {
             }
         },
         series: [{
-            name: 'Brands',
+            name: 'Авторизации',
             colorByPoint: true,
-            data: [{
-                name: 'ВКГТУ',
-                y: 1
-            }, {
-                name: 'КАРГУ',
-                y: 0
-            }, {
-                name: 'СГРК',
-                y: 0
-            }, {
-                name: 'ЕНУ',
-                y:0
-            }, {
-                name: 'Другие',
-                y:0
-            }]
+            data: this.getSigns()
         }]
+    })
+}
+
+function getSigns () {
+    var result = []
+    var dormitories = JSON.parse( JSON.stringify(this.$store.state.dormitories.list))
+    dormitories.sort((a, b) => b.signs - a.signs)
+
+    for (let i = 0; i != dormitories.length; ++i) {
+        if ( i >= 4 ) {
+            if ( result[4] === undefined )
+                result[4] = { y: 0 }
+                
+            result[4].name = 'Другие'
+            result[4].y += dormitories[i].signs || 0
+        }
+
+        else {
+            result.push({
+                name: dormitories[i].name,
+                y: dormitories[i].signs
+            })
+        }
+    }
+
+    return result
+}
+
+function allSigns () {
+    var dormitories = JSON.parse( JSON.stringify(this.$store.state.dormitories.list))
+    var count = 0
+
+    dormitories.forEach(dormitory => {
+        count += dormitory.signs
+    })
+
+    return count
+}
+
+async function getByDays (type) {
+    return new Promise(async resolve => {
+        let result = []
+
+        if ( this.byDate === false ) {
+            var { data } = await this.api.get('sign/list')
+            this.byDate = data
+            result = data[type]
+        }
+
+        else result = this.byDate[type]
+
+        result.forEach((value, index) => {
+            if (value === null)
+                result[index] = 0
+        })
+
+        resolve(result)
     })
 }
 </script>

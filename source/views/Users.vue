@@ -3,7 +3,8 @@
 div#students
 
     div( class='controls-div' )
-            Button( icon='plus' title='Создать пользователя' background='blue' icon-top='2px' @click.native='addUser()' )
+            Button( v-if='canCreate' icon='plus' title='Создать пользователя' background='blue' icon-top='2px' @click.native='openModal(true)' )
+            span( v-else )
             input( class='user-search' placeholder='Поиск по имени...' v-model='search' )
 
     table( class='all-dormitories' )
@@ -15,11 +16,11 @@ div#students
                 th( class='data' ) Посещений
             
         tbody( class='body' )
-            tr( v-for='(user, id) in sorted' v-if='user' class='row' :key='id' @click='editUser(id)' :q='id' )
-                td( class='data' ) {{ user[0] }} {{ user[1] }}
-                td( class='data' ) {{ user[3] }}
-                td( class='data' ) {{ user[4] }}
-                td( class='data' ) {{ user[6] }}
+            tr( v-for='(user, id) in sorted' class='row' :key='id' @click='openModal(false, user)' )
+                td( class='data' ) {{ user.fullName }}
+                td( class='data' ) {{ user.position }}
+                td( class='data' ) {{ getLevel(user.type) }}
+                td( class='data' ) {{ user.signs }}
 
         tfoot( class='not-body foot' )
             tr( class='row' )
@@ -32,32 +33,38 @@ import Button from ':src/components/UI/Button.vue'
 
 export default {
     components: { Button },
-    computed: { last, sorted, all },
-    methods: { addUser, editUser },
+    computed: { list, sorted, all },
+    methods: { getLevel, openModal },
     mounted: start,
     data: function () {
         return {
-            lastU: 0,
             search: '',
-            useDor: '',
-            users: this.$store.state.list.users
+            users: this.$store.state.user.list,
+            canCreate: this.$store.state.user.data.type === 'admin'
         }
     }
 }
 
-function last () {
-    return this.$store.state.last
+function list () {
+    var list = []
+
+    this.$store.state.user.list.forEach(user => {
+        let push = JSON.parse( JSON.stringify(user) )
+
+        push.fullName = `${user.lastName} ${user.firstName} ${user.patronymic}`
+        list.push(push)
+    })
+
+    return list
 }
 
 function sorted () {
-    if ( this.lastU ) {}
-
     var list = []
 
-    if ( this.users != undefined )
-        this.users.forEach((user, index) => {
-            if ( user[0].toLowerCase().search( this.search.toLowerCase() || '' ) > -1 )
-                list[index] = user
+    if ( this.list != undefined )
+        this.list.forEach((user) => {
+            if ( user.fullName.toLowerCase().search( this.search.toLowerCase() || '' ) > -1 )
+                list.push(user)
         })
 
     return list
@@ -68,17 +75,33 @@ function all () {
 
     if ( this.sorted != undefined )
         this.sorted.forEach(user => {
-            count += user[6] || 0
+            count += user.signs || 0
         })
 
     return count
 }
 
-function addUser () {
-    this.$store.commit('openModal', {
-        name: 'createUser',
-        data: {}
-    })
+function getLevel (type) {
+    if ( type === 'admin' )
+        return 'Администратор'
+
+    else return 'Управляющий'
+}
+
+function openModal (isNew, user) {
+    if ( isNew === true ) {
+        this.$store.commit('openModal', {
+            name: 'createUser',
+            data: {}
+        })
+    }
+
+    else {
+        this.$store.commit('openModal', {
+            name: 'editUser',
+            data: user
+        })
+    }
 }
 
 function editUser (id) {
@@ -91,12 +114,9 @@ function editUser (id) {
     })
 }
 
-function start () {
-    this.$watch('last', (last) => {
-        this.users = this.$store.state.list.users
-        this.lastU = last
-        this.$forceUpdate()
-    })
+async function start () {
+    var { data } = await this.api.get('user/list')
+    this.$store.commit('users-list-set', data)
 }
 </script>
 

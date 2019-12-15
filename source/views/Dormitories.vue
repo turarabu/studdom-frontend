@@ -1,6 +1,6 @@
 <template lang="pug">
     div#about
-        div( v-if='dormitory === false' class='controls-div' )
+        div( v-if='dormitory === undefined' class='controls-div' )
             Button( icon='plus' title='Добавить общежитие' background='blue' icon-top='2px' @click.native='openModal(true)' )
             Button( icon='export-report' title='Выгрузить отчёт' background='green' )
 
@@ -8,7 +8,7 @@
             div( class='block' )
                 router-link( tag='label' to='/dormitories' )
                     Button( icon='arrow-back' title='Назад к общежитиям' background='blue' icon-top='3px' )
-                span( class='current-der' ) Общежитие: {{ dors[dormitory].name }}
+                span( class='current-der' ) Общежитие: {{ dormitory.name }}
 
             div( class='block' )
                 input( class='datepicker' type='date' placeholder='C' )
@@ -29,15 +29,14 @@ export default {
 }
 
 function dors () {
-    return this.$store.state.list.dormitories
+    return this.$store.state.dormitories.list
 }
 
 function dormitory () {
-    return this.$route.params.id || false
+    return this.dors.find(d => d.code && d.code === this.$route.params.id)
 }
 
 function back () {
-    console.log('back')
     this.$router.back()
 }
 
@@ -51,17 +50,14 @@ function openModal (isNew) {
 
     else {
         this.$store.commit('openModal', {
-            name: 'createDormitory',
-            data: {
-                id: this.dormitory
-            }
+            name: 'editDormitory',
+            data: this.dormitory
         })
     }
 }
 
 async function start () {
-    var { data } = this.api.get('dormitory/list')
-
+    var { data } = await this.api.get('dormitory/list')
     this.$store.commit('dormitories-set', data)
 }
 </script>

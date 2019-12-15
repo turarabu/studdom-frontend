@@ -1,7 +1,7 @@
 <template lang='pug'>
 
     div#create-user( class='modal' )
-        h3( class='modal-title' ) Создание пользователя
+        h3( class='modal-title' ) Редактирование пользователя
 
         form#form( class='blocks-div' @submit='save' )
             div( class='inputs-div' )
@@ -16,18 +16,18 @@
 
             div( class='user-info-div' )
                 div( class='avatar-div' )
-                    img( class='avatar' src='/images/avatar.png' )
+                    img( class='avatar' :src='getAvatar(user.avatar)' )
 
-                InputFile( class='create-input' accept='image/*' v-model='user.avatar' )
+                InputFile( class='create-input' accept='image/*' v-model='user.newAvatar' )
 
-                InputText( class='create-input' placeholder='Логин' v-model='user.login' )
+                InputText( class='create-input' disabled placeholder='Логин' v-model='user.login' )
                 InputText( class='create-input' type='password' placeholder='Пароль' v-model='user.password' )
                 InputText( class='create-input' type='password' placeholder='Повторите пароль' v-model='user.confirmPassword' )
             
 
         div( class='buttons-div' )
             Button( title='Отменить' background='red' icon-top='2px' @click.native='cancel' )
-            Button( icon='create' title='Создать' background='green' icon-top='2px' @click.native='save' )
+            Button( icon='create' title='Сохранить' background='green' icon-top='2px' @click.native='save' )
                 
 
 </template>
@@ -43,7 +43,7 @@ export default {
     props: ['id', 'data'],
     components: { InputText, InputFile, Select, Button },
     computed: { cities },
-    methods: { defaults, save, cancel },
+    methods: { getAvatar, save, cancel },
     data: function () {
         return {
             userTypes: {
@@ -51,20 +51,7 @@ export default {
                 manager: 'Управляющий'
             },
 
-            user: {
-                firstName: '',
-                lastName: '',
-                patronymic: '',
-                iin: '',
-                phone: '',
-                position: '',
-                type: 'admin',
-
-                avatar: undefined,
-                login: '',
-                password: '',
-                confirmPassword: ''
-            }
+            user: this.data
         }
     }
 }
@@ -79,21 +66,11 @@ function cities () {
     return list
 }
 
-function defaults () {
-    return {
-        firstName: '',
-        lastName: '',
-        patronymic: '',
-        iin: '',
-        phone: '',
-        position: '',
-        type: 'admin',
-
-        avatar: undefined,
-        login: '',
-        password: '',
-        confirmPassword: ''
-    }
+function getAvatar (avatar) {
+    if ( avatar == undefined || avatar == false )
+        return '/images/avatar.png'
+    
+    else return 'data:image/png;base64, ' + avatar
 }
 
 async function save (event) {
@@ -103,6 +80,11 @@ async function save (event) {
     if ( this.password !== this.confirmPassword )
         return
 
+    var post = JSON.parse( JSON.stringify(this.user) )
+
+    if ( this.newAvatar !== undefined )
+        post.avatar = this.newAvatar
+
     let empty = Object.keys(this.user).find(key => {
         return false
         // if ( key === 'avatar' )
@@ -110,14 +92,12 @@ async function save (event) {
 
         // else return this.user[key] == false
     })
-
+    
     if ( empty === undefined ) {
-        let { data, success } = await this.api.post('user/sign-up', this.user)
+        let { data, success } = await this.api.post('user/update', post)
 
         if ( success === true ) {
             this.$store.commit('users-list-set', data)
-            this.dormitory = this.defaults()
-            
             return this.$store.commit("closeModal", this.id)
         }
     }

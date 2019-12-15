@@ -1,23 +1,47 @@
 <template lang='pug'>
-    div( class='switch-div' @click='active = !active' )
-        div( class='switch-slider' :class='{ active }' )
+    div( class='switch-div' @click='change' )
+        div( class='switch-slider' :class='{ active: status }' )
             div( class='point' )
 </template>
 
 <script>
 export default {
     props: ['value'],
+    methods: { change },
     mounted: start,
     data: function () {
         return {
-            active: this.value || false
+            lock: false,
+            active: this.value || false,
+            status: this.value || false,
         }
     }
 }
 
+function change () {
+    if ( this.lock === true )
+        return 
+
+    this.active = !this.active
+    
+    setTimeout(() => {
+        if ( this.lock === false )
+            this.status = this.active
+    }, 10)
+}
+
 function start () {
     this.$watch('active', value => {
-        this.$emit('input', start)
+        
+        this.$emit('input', {
+            value,
+            lock: (status) => {
+                if ( status === false )
+                    this.status = this.active
+
+                this.lock = status
+            }
+        })
     })
 }
 </script>
