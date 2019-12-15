@@ -176,13 +176,13 @@ function getSigns () {
                 result[4] = { y: 0 }
                 
             result[4].name = 'Другие'
-            result[4].y += dormitories[i].signs || 0
+            result[4].y += parseSigns(dormitories[i].signs) || 0
         }
 
         else {
             result.push({
                 name: dormitories[i].name,
-                y: dormitories[i].signs
+                y: parseSigns(dormitories[i].signs)
             })
         }
     }
@@ -191,13 +191,11 @@ function getSigns () {
 }
 
 function allSigns () {
-    var dormitories = JSON.parse( JSON.stringify(this.$store.state.dormitories.list))
+    var dormitories = this.$store.state.dormitories.list
     var count = 0
 
     dormitories.forEach(dormitory => {
-        count += (dormitory.signs.length === undefined)
-            ? dormitory.signs
-            : dormitory.signs.length
+        count += parseSigns(dormitory.signs)
     })
 
     return count
@@ -222,6 +220,12 @@ async function getByDays (type) {
 
         resolve(result)
     })
+}
+
+function parseSigns (signs) {
+    return (signs.length === undefined)
+        ? signs || 0
+        : signs.length
 }
 </script>
 
