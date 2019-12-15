@@ -31,11 +31,13 @@ function dormitories () {
 }
 
 function allSigns () {
-    var dormitories = JSON.parse( JSON.stringify(this.$store.state.dormitories.list))
+    var dormitories = this.$store.state.dormitories.list
     var count = 0
 
     dormitories.forEach(dormitory => {
-        count += dormitory.signs
+        count += (dormitory.signs.length === undefined)
+            ? dormitory.signs
+            : dormitory.signs.length
     })
 
     return count

@@ -237,7 +237,9 @@ function allSigns () {
     var count = 0
 
     dormitories.forEach(dormitory => {
-        count += dormitory.signs
+        count += (dormitory.signs.length === undefined)
+            ? dormitory.signs
+            : dormitory.signs.length
     })
 
     return count
