@@ -2,8 +2,11 @@
     div( class='create-report' )
         p( class='bold-text' ) Пероид отчётности
         div( class='period-div' )
-            input( class='datepicker' type='date' placeholder='С' )
-            input( class='datepicker' type='date' placeholder='По' )
+            span( class='datepicker-placeholder' ) С
+            input( class='record-datepicker' type='date' placeholder='С' v-model='from' )
+
+            span( class='datepicker-placeholder' ) По
+            input( class='record-datepicker' type='date' placeholder='По' v-model='to' )
 
         div( class='blocks-div' )
             div( class='block' )
@@ -12,7 +15,7 @@
                 div( class='options-div' )
                     OptionsList( :list='reportTypes' name='reportType' v-model='selected.report' )
 
-                Button( icon='upload' title='Выгрузить в формате PDF' background='green' icon-top='3px' )
+                Button( icon='upload' title='Выгрузить в формате PDF' background='green' icon-top='3px' @click.native='download' )
 
 
             div( class='block' )
@@ -21,7 +24,7 @@
                     input( class='search' placeholder='Поиск субъекта...' v-model='search' )
 
                 div( class='options-div' )
-                    OptionsList( v-if='sortedDormitories.length > 0' :list='sortedDormitories' name='dormitory' v-model='selected.report' )
+                    OptionsList( v-if='theLength > 0' :list='sortedDormitories' name='dormitory' v-model='selected.dormitory' )
                     span( v-else class='not-found' ) Не найдено
 
 </template>
@@ -32,50 +35,72 @@ import OptionsList from ':src/components/UI/OptionsList.vue'
 
 export default {
     components: { Button, OptionsList },
-    computed: { sortedDormitories },
+    computed: { dormitories, sortedDormitories, theLength },
+    methods: { download },
     mounted: start,
     data: function () {
+        var date = new Date()
+
         return {
+            from: `${ date.getFullYear() }-${ date.getMonth() + 1 }-${ date.getDate() - 5 }`,
+            to: `${ date.getFullYear() }-${ date.getMonth() + 1 }-${ date.getDate() }`,
             search: '',
             selected: {
-                report: 0,
-                dormitory: 0
+                report: 'sign-in',
+                dormitory: 'all'
             },
 
-            reportTypes: [
-                'Статистика по авторизациям',
-                'Статистика по регистрациям',
-                'Свободный отчет по общежитиям',
-                'Отчет по терминалам',
-            ],
-
-            dormitories: [
-                'Все общежития',
-                'ВКГТУ',
-                'КАЗАТУ',
-                'ЕНУ',
-                'ВКГТУ',
-                'КАЗНТУ',
-            ]
+            reportTypes: {
+                'sign-in': 'Статистика по авторизациям',
+                'sign-up': 'Статистика по регистрациям',
+                'consolidate': 'Сводный отчет по общежитиям',
+                'turnstiles': 'Отчет по терминалам',
+            }
         }
     }
 }
 
-function sortedDormitories () {
-    var list = []
+function dormitories () {
+    return this.$store.state.dormitories.list
+}
 
-    if ( this.dormitories !== undefined )
+function theLength () {
+    return this.sortedDormitories && Object.keys(this.sortedDormitories).length
+}
+
+function sortedDormitories () {
+    var list = {
+        all: 'Все общежития'
+    }
+
+    if ( this.$store.state.dormitories.list ) {
         this.dormitories.forEach(dormitory => {
-            if ( dormitory.toLowerCase().search( (this.search || '').toLowerCase() ) > -1 )
-                list.push(dormitory)
+            if ( dormitory.name.toLowerCase().search( (this.search || '').toLowerCase() ) > -1 )
+                list[dormitory.code] = dormitory.name
         })
 
+        if ( this.search.length > 0 )
+            delete list.all
+    }
+
     return list
+}
+
+function download () {
+    var range = `from=${ this.from }&to=${ this.to }`
+    var types = `type=${ this.selected.report }&dormitory=${ this.selected.dormitory }`
+
+
+    window.open(`http://localhost:8000/record/pdf?${ range }&${ types }`, '_blank')
 }
 
 function start () {
     this.$watch('search', () => {
         this.selected.dormitory = 0
+    })
+
+    this.$watch('from', value => {
+        console.log(value)
     })
 }
 </script>
@@ -90,12 +115,16 @@ function start () {
         font-weight 500
         margin 4px 0
 
-    .datepicker
+    .datepicker-placeholder
+        display inline-block
+        margin-right 8px
+
+    .record-datepicker
         border 1px solid $light-gray
         border-radius 3px
         font-size 18px
         padding 6px 12px
-        margin-right 8px
+        margin-right 12px
 
     .blocks-div
         align-items flex-start

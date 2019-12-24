@@ -9,7 +9,7 @@ function install (Vue) {
 
 function get (path, data = {}) {
     var query = getQuery(data)
-    var response = request(`//${host}:${port}/${path}?${query}`, {
+    var response = request(`https:////${host}:${port}/${path}?${query}`, {
         method: 'GET'
     })
 
@@ -18,7 +18,7 @@ function get (path, data = {}) {
 
 function post (path, data = {}) {
     var body = getFormData(data)
-    var response = request(`//${host}:${port}/${path}`, {
+    var response = request(`https:////${host}:${port}/${path}`, {
         body,
         method: 'POST'
     })
