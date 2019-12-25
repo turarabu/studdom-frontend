@@ -1,7 +1,7 @@
 export default { install }
 
 const host = 'api.studdom.host'
-const port = 443
+const port = 80
 
 // const host = 'localhost'
 // const port = 8000
