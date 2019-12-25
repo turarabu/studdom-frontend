@@ -76,7 +76,7 @@ function start () {
     font-size 18px
     padding 12px 16px
     position relative
-    width 420px
+    width 380px 
 
     .icon
         color #555

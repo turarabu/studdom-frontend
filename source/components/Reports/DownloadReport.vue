@@ -17,10 +17,17 @@
                     th( class='data' ) Периоды
 
             tbody( class='body' )
-                tr( v-for='(row, id) in records' class='row' :class='{ active: selected === id }' :key='id' @click='selected = id' )
-                    td( v-for='(data, id) in row' class='data' :key='id' ) {{ data }}
+                tr( v-for='(record, index) in records' class='row' :class='{ active: selected === record.id }' :key='record._id' @click='selected = record.id' )
+                    td( class='data' ) {{ index+1 }}
+                    td( class='data' ) {{ record.userName }}
+                    td( class='data' ) {{ getDate(record.date) }}
+                    td( class='data' ) {{ getType(record.recordType) }}
+                    td( class='data' ) {{ record.dormitory }}
+                    td( class='data' ) С {{ getPeriod(record.from) }}
+                        br
+                        span По {{ getPeriod(record.to) }}
 
-        Button( v-if='selected !== false' icon='upload' title='Скачать формате PDF' background='green' icon-top='3px' )
+        Button( v-if='selected !== false' icon='upload' title='Скачать формате PDF' background='green' icon-top='3px' @click.native='download' )
 
 
 </template>
@@ -31,18 +38,53 @@ import OptionsList from ':src/components/UI/OptionsList.vue'
 
 export default {
     components: { Button },
+    methods: { download, getDate, getType, getPeriod },
+    mounted: start,
     data: function () {
         return {
             active: 0,
             selected: false,
-            records: [
-                ['№1234', 'Ибраимов Аскар Изимбаевич', '25-12-2019', 'Статистика по авторизациям', 'ВКГТУ', 'С 20-12-2019, По 25-12-2019'],
-                ['№1235', 'Ибраимов Аскар Изимбаевич', '25-12-2019', 'Статистика по регистрациям', 'ВКГТУ', 'С 20-12-2019, По 25-12-2019'],
-                ['№1236', 'Ибраимов Аскар Изимбаевич', '25-12-2019', 'Свободный отчет по общежитиям', 'ВКГТУ', 'С 20-12-2019, По 25-12-2019'],
-                ['№1237', 'Ибраимов Аскар Изимбаевич', '25-12-2019', 'Отчет по терминалам', 'ВКГТУ', 'С 20-12-2019, По 25-12-2019'],
-            ]
+            records: []
         }
     }
+}
+
+function download () {
+    window.open('http://localhost:8000/record/download?id=' + this.selected, '_blank')
+}
+
+function getDate (date) {
+    return new Date(date).toLocaleString('ru', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+    })
+}
+
+function getType (type) {
+    var types = {
+        'sign-in': 'Статистика по авторизациям',
+        'sign-up': 'Статистика по регистрациям',
+        'consolidate': 'Сводный отчет по общежитиям',
+        'turnstiles': 'Отчет по терминалам'
+    }
+
+    return types[type]
+}
+
+function getPeriod (from) {
+    return new Date(from).toLocaleString('ru', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    })
+}
+
+async function start () {
+    let { data } = await this.api.get('record/list')
+    this.records = data
 }
 
 </script>

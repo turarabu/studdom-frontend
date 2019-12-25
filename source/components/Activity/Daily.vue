@@ -6,14 +6,43 @@
 </template>
 
 <script>
+const locale = ['ru', {
+    month: 'short',
+    day: 'numeric'
+}]
+
 export default {
-    mounted: start
+    props: ['data', 'period'],
+    methods: { update, getSignIns, getSignUps },
+    mounted: start,
+    data: function () {
+        return {
+            days: []
+        }
+    }
 }
 
-function start () {
+function getDays (period) {
+    var list = []
+    var begin = new Date(period[0])
+    var end = new Date(period[1])
+    var withMonth = begin.getMonth() != end.getMonth()
+    var range = 0|(end-begin)/1000/60/60/24
+
+    for ( let i = 0; i <= range; ++i ) {
+        if ( withMonth === false )
+            list.push( new Date(begin - 0 + 1000*60*60*24*i).getDate() )
+        else list.push( new Date(begin - 0 + 1000*60*60*24*i).toLocaleDateString(...locale) )
+    }
+    
+    // list.sort((a, b) => a - b)
+    return list
+}
+
+function update () {
     Highcharts.chart('activity-3', {
         chart: { type: 'areaspline' },
-        title: { text: 'Просто красивый график, потому что нет данных' },
+        title: { text: '' },
         exporting: { buttons: { contextButton: { enabled: false } } },
         legend: {
             layout: 'vertical',
@@ -27,39 +56,7 @@ function start () {
                 Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF'
         },
         xAxis: {
-            categories: [
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-                '6',
-                '7',
-                '8',
-                '9',
-                '10',
-                '11',
-                '12',
-                '13',
-                '14',
-                '15',
-                '16',
-                '17',
-                '18',
-                '19',
-                '20',
-                '21',
-                '22',
-                '23',
-                '24',
-                '25',
-                '26',
-                '27',
-                '28',
-                '29',
-                '30',
-                '31',
-            ]
+            categories: this.days // Days
         },
         yAxis: { title: { text: '' } },
         tooltip: {
@@ -73,13 +70,76 @@ function start () {
                 fillOpacity: 0.5
             }
         },
-        series: [{
-            name: 'Регистрации',
-            data: [3, 4, 3, 5, 4, 10, 12, 1, 3, 4, 3, 3, 5, 4]
-        }, {
-            name: 'Авторизации',
-            data: [1, 3, 4, 3, 3, 5, 4, 3, 4, 3, 5, 4, 2, 3, 4, 3, 3, 5, 4, 3, 4, 3, 5, 4]
-        }]
+        series: [
+            {
+                name: 'Авторизации',
+                data: this.getSignIns()
+            },
+
+            {
+                name: 'Регистрации',
+                data: this.getSignUps()
+            },
+        ]
+    })
+}
+
+function getSignIns () {
+    var list = []
+
+    this.days.forEach(date => {
+        let push = 0
+
+        this.data.signIns.forEach(sign => {
+
+            if ( typeof date === 'number' ) {
+                if ( new Date(sign.date).getDate() === date )
+                    ++push
+            }
+
+            else {
+                if ( new Date(sign.date).toLocaleDateString(...locale) === date )
+                    ++push
+            }
+            
+        })
+
+        list.push(push)
+    })
+
+    return list
+}
+
+function getSignUps () {
+    var list = []
+
+    this.days.forEach(date => {
+        let push = 0
+
+        this.data.signUps.forEach(sign => {
+            if ( typeof date === 'number' ) {
+                if ( new Date(sign.signUp).getDate() === date ) {
+
+                    ++push
+                }
+            }
+
+            else {
+                if ( new Date(sign.signUp).toLocaleDateString(...locale) === date )
+                    ++push
+            }
+        })
+
+        list.push(push)
+    })
+
+    return list
+}
+
+function start () {
+    this.$watch('data', (value) => {
+        this.days = getDays(this.period)
+        this.update()
     })
 }
 </script>

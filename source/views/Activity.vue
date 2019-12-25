@@ -19,43 +19,81 @@
 
         div( class='second-line' )
             h3( class='block-title' ) Активность по дням
-            DailyActivity
+            DailyActivity( :data='data' :period='period' )
 
 </template>
 
 <script>
-import SearchList from ':src/components/UI/SearchList.vue'
+import SearchList from ':src/components/UI/Input/Select.vue'
 import DailyActivity from ':src/components/Activity/Daily.vue'
 
 export default {
     components: { SearchList, DailyActivity },
     computed: { dormitories },
+    methods: { update, updateFirst, updateSecond },
     mounted: start,
     data: function () {
+        var to = new Date()
+        var from = new Date( to - (1000 * 60 * 60 * 24 * 7) )
+        
         return {
+            period: [from, to],
             datepicker: false,
-            useDor: '',
-            list: ['ВКГТУ', 'КАРГУ', 'СГРК', 'ЕНУ', 'КАЗНУ', 'ЮКГУ']
+            useDor: 'vkgtu',
+            data: {
+                signUps: [],
+                signIns: []
+            },
         }
     }
 }
 
 function dormitories () {
-    var list = []
+    var list = {}
 
     this.$store.state.dormitories.list.forEach(dormitory => {
-        list.push(dormitory.name)
+        list[ dormitory.code ] = dormitory.name
     })
 
-    console.log(list)
-    return  list
+    return list
 }
 
-function start () {
-    this.datepicker = $('#calendar').datepicker({
-            range: true,
-            toggleSelected: false,
-        }).data('datepicker').selectDate([new Date(), new Date()])
+async function update () {
+    var { data } = await this.api.get('record/period', {
+        from: this.period[0],
+        to: this.period[1],
+        dormitory: this.useDor
+    })
+
+    this.data = data
+
+    this.updateFirst()
+    this.updateSecond()
+}
+
+function updateFirst () {
+    var months = []
+    var signUps = 0
+    var signIns = 0
+
+    this.data.signUps.forEach(sign => {
+        let date = new Date(sign.signUp)
+        let month = date.toLocaleDateString('ru', { month: 'long' })
+        let day = date.getDay()
+
+        if ( months.includes( month ) === false )
+            months.push(month)
+
+        if ( (day === 0 || day === 6) === false )
+            ++signUps
+    })
+
+    this.data.signIns.forEach(sign => {
+        let date = new Date(sign.date).getDay()
+
+        if ( (date === 0 || date === 6) === false )
+            ++signIns
+    })
 
     Highcharts.chart('activity-1', {
         chart: {
@@ -65,13 +103,11 @@ function start () {
             type: 'pie',
             height: 340
         },
-        title: {
-            text: 'Декабрь',
-            margin: 0
-        },
+
+        title: { text: `${ months[0] } - ${ months[0] }` },
         credits: { enabled: false },
         exporting: { buttons: { contextButton: { enabled: false } } },
-        tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' },
+        tooltip: { pointFormat: '<b>{point.percentage:.1f}%</b>' },
         plotOptions: {
             pie: {
                 allowPointSelect: true,
@@ -88,15 +124,36 @@ function start () {
         series: [{
             colorByPoint: true,
             data: [
-                { name: 'Входы', y: 1 },
-                { name: 'Выходы', y: 0 },
-                { name: 'Удаления', y: 0 },
-                { name: 'Регистрации', y: 1 }
+                { name: 'Авторизации', y: signIns },
+                { name: 'Регистрации', y: signUps }
             ]
         }]
     })
+}
 
+function updateSecond () {
+    var months = []
+    var signUps = 0
+    var signIns = 0
 
+    this.data.signUps.forEach(sign => {
+        let date = new Date(sign.signUp)
+        let month = date.toLocaleDateString('ru', { month: 'long' })
+        let day = date.getDay()
+
+        if ( months.includes( month ) === false )
+            months.push(month)
+
+        if ( date === 0 || date === 6 )
+            ++signUps
+    })
+
+    this.data.signIns.forEach(sign => {
+        let date = new Date(sign.signUp).getDay()
+
+        if ( date === 0 || date === 6 )
+            ++signIns
+    })
 
     Highcharts.chart('activity-2', {
         chart: {
@@ -106,10 +163,11 @@ function start () {
             type: 'pie',
             height: 340
         },
-        title: { text: 'Декабрь' },
+
+        title: { text: `${ months[0] } - ${ months[ months.length - 1 ] }` },
         credits: { enabled: false },
         exporting: { buttons: { contextButton: { enabled: false } } },
-        tooltip: { pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' },
+        tooltip: { pointFormat: '<b>{point.percentage:.1f}%</b>' },
         plotOptions: {
             pie: {
                 allowPointSelect: true,
@@ -126,12 +184,30 @@ function start () {
         series: [{
             colorByPoint: true,
             data: [
-                { name: 'Входы', y: 0 },
-                { name: 'Выходы', y: 0 },
-                { name: 'Удаления', y: 0 },
-                { name: 'Регистрации', y: 0 }
+                { name: 'Авторизации', y: signIns },
+                { name: 'Регистрации', y: signUps }
             ]
         }]
+    })
+}
+
+function start () {
+    this.update()
+    this.datepicker = $('#calendar').datepicker({
+            range: true,
+            toggleSelected: false,
+            onSelect: (a, event) => {
+                if ( event.length === 2 ) {
+                    this.period = event
+                    this.update()
+                }
+            }
+        })
+
+    this.datepicker.data('datepicker').selectDate(this.period)
+
+    this.$watch('useDor', (...arg) => {
+        this.update()
     })
 }
 </script>

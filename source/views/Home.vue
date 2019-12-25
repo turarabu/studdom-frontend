@@ -2,9 +2,9 @@
     div#home
         div( class='cards-div' )
             InfoCard( class='red' icon='bed' title='Общежитий' :value='dormitories.length' icon-top='8px' )
-            InfoCard( class='green' icon='student' title='Студентов' value=1 icon-top='8px' )
+            InfoCard( class='green' icon='student' title='Студентов' :value='students.length' icon-top='8px' )
             InfoCard( class='blue arrows-rotate' icon='arrows' title='Авторизации' :value='allSigns' icon-top='4px' )
-            InfoCard( class='purple' icon='reports' title='Отчёты' value=0 icon-top='8px' )
+            InfoCard( class='purple' icon='reports' title='Отчёты' :value='this.records' icon-top='8px' )
 
         FirstLine( :use='use' )
         SecondLine( :use='use' )
@@ -17,17 +17,22 @@ import SecondLine from ':src/components/Home/SecondLine.vue'
 
 export default {
     components: { InfoCard, FirstLine, SecondLine },
-    computed: { dormitories, allSigns },
+    computed: { dormitories, students, allSigns },
     mounted: start,
     data: function () {
         return {
-            use: window.innerWidth >= 1600 ? 1600 : 1366
+            use: window.innerWidth >= 1600 ? 1600 : 1366,
+            records: 0
         }
     }
 }
 
 function dormitories () {
     return this.$store.state.dormitories.list
+}
+
+function students () {
+    return this.$store.state.students.list
 }
 
 function allSigns () {
@@ -43,9 +48,19 @@ function allSigns () {
     return count
 }
 
-function start () {
+async function start () {
     window.onresize = () => {
         this.use = window.innerWidth >= 1600 ? 1600 : 1366
+    }
+
+    if ('records') {
+        let { data } = await this.api.get('record/list')
+        this.records = data.length
+    }
+
+    if ('students') {
+        let { data } = await this.api.get('student/all')
+        this.$store.commit('students-set', data)
     }
 }
 </script>

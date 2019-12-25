@@ -1,8 +1,12 @@
 <template lang="pug">
     div#top-block
         div( class='notifications' )
-            span( class='icon icon-bell' )
-            span( class='nots-count' ) 14
+            span( class='icon icon-bell' @click='showNots = !showNots' )
+            span( class='nots-count' @click='showNots = !showNots' ) 14
+
+            div( class='nots-list' :class='{ active: showNots }' )
+                span( class='note' ) Кто-то загрузил отчёт по чем-то
+                span( class='note' ) Кто-то загрузил отчёт по чем-то
 
         div( class='user-menu' )
             div( class='content' @click='showMenu = !showMenu' )
@@ -22,6 +26,7 @@ export default {
     methods: { quit },
     data: function () {
         return {
+            showNots: false,
             showMenu: false
         }
     }
@@ -59,6 +64,7 @@ async function quit () {
         width 72px
         
         .icon
+            cursor pointer
             font-size 28px
             position relative
             top 2px
@@ -68,6 +74,7 @@ async function quit () {
             background $red
             border-radius 50%
             color $white
+            cursor pointer
             display flex
             font-size 10px
             justify-content center
@@ -76,6 +83,23 @@ async function quit () {
             right 16px
             height 18px
             width 18px
+
+        .nots-list
+            background #FFFFFF
+            border-radius 5px
+            box-shadow 0 0 0 RGBA(50, 50, 50, .5)
+            max-height 0
+            opacity 0
+            padding 0 16px
+            position absolute
+            top calc(100% + 12px)
+            right -16px
+            width 300px
+            &.active
+                box-shadow 0 0 3px 1px RGBA(50, 50, 50, .5)
+                max-height 200px
+                opacity 1
+                padding 16px
 
     .user-menu
         border-left 1px solid transparentify($light-gray, .25)
