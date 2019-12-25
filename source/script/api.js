@@ -1,10 +1,10 @@
 export default { install }
 
-// const host = 'api.studdom.host'
-// const port = 443
+const host = 'api.studdom.host'
+const port = 443
 
-const host = 'localhost'
-const port = 8000
+// const host = 'localhost'
+// const port = 8000
 
 function install (Vue) {
     Vue.prototype.api = { get, post }
