@@ -72,6 +72,12 @@ async function start () {
 
         else this.$store.commit('user-quit')
     }
+
+    if ('actions') {
+        let { data } = await this.api.get('action/list')
+
+        this.$store.commit('set-actions', data)
+    }
 }
 </script>
 

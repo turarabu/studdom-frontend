@@ -1,11 +1,11 @@
 <template lang='pug'>
     label( class='input-label' )
-        input( class='input' v-bind='{ type, disabled, placeholder }' v-model='checkValue' )
+        input( class='input' v-bind='{ type, required, disabled, placeholder }' v-model='checkValue' )
 </template>
 
 <script>
 export default {
-    props: ['value', 'pattern', 'type', 'disabled', 'placeholder'],
+    props: ['value', 'pattern', 'type', 'required', 'disabled', 'placeholder'],
     mounted: start,
     data: function () {
         var value = (this.value === undefined)

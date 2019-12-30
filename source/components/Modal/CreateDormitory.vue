@@ -5,34 +5,16 @@
 
         form#form( class='blocks-div' @submit='save' )
             div( class='inputs-div' )
-                InputText( class='create-input' placeholder='Название общежития' v-model='dormitory.name' )
-                Select( class='create-input' placeholder='Город' :list='cities' v-model='dormitory.city' )
-                InputText( class='create-input' placeholder='Вместимость (Человек)' pattern='[0-9]{1,6}' v-model='dormitory.capacity' )
-                InputText( class='create-input' placeholder='Координаты (Широта, Долгота)' v-model='dormitory.coordinates' )
-                InputText( class='create-input' placeholder='Логин пользователя' v-model='dormitory.login' )
-                InputText( class='create-input' type='password' placeholder='Пароль пользователя' v-model='dormitory.password' )
+                InputText( class='create-input' placeholder='Название общежития' v-bind='{required: true}' v-model='dormitory.name' )
+                Select( class='create-input' placeholder='Город' :list='cities' v-bind='{required: true}' v-model='dormitory.city' )
+                InputText( class='create-input' placeholder='Вместимость (Человек)' pattern='[0-9]{1,6}' v-bind='{required: true}' v-model='dormitory.capacity' )
+                InputText( class='create-input' placeholder='Координаты (Широта, Долгота)' v-bind='{required: true}' v-model='dormitory.coordinates' )
+                InputText( class='create-input' placeholder='Логин пользователя' v-bind='{required: true}' v-model='dormitory.login' )
+                InputText( class='create-input' type='password' placeholder='Пароль пользователя' v-bind='{required: true}' v-model='dormitory.password' )
 
-            div( class='turns-div' )
-                p( class='turns-title' ) Турникеты
-                div( class='turns-list' )
-                    div( class='head row' )
-                        span( class='data' ) №
-                        span( class='data' ) Название
-                        span( class='data' ) Статус
-
-                    div( class='row' )
-                        span( class='data' ) 1
-                        span( class='data' ) Главный вход
-                        span( class='data' ) Активный
-
-                    div( class='row' )
-                        span( class='data' ) 2
-                        span( class='data' ) Боковой вход
-                        span( class='data' ) Активный
-
-        div( class='buttons-div' )
-            Button( title='Отменить' background='red' icon-top='2px' @click.native='cancel' )
-            Button( icon='create' title='Создать' background='green' icon-top='2px' @click.native='save' )
+            div( class='buttons-div' )
+                Button( title='Отменить' background='red' icon-top='2px' @click.native='cancel' )
+                Button( icon='create' title='Создать' background='green' icon-top='2px' )
                 
 
 </template>
@@ -52,7 +34,7 @@ export default {
         return {
             dormitory: {
                 name: '',
-                city: false,
+                city: 'astana',
                 capacity: '',
                 coordinates: '',
                 login: '',
@@ -75,7 +57,7 @@ function cities () {
 function defaults () {
     return {
         name: '',
-        city: false,
+        city: 'astana',
         capacity: '',
         coordinates: '',
         login: '',
@@ -118,6 +100,7 @@ function cancel () {
     .create-input
         display block
         margin 12px 0
+        width 100%
 
     .buttons-div
         border-top 1px solid lighten($light-gray, 15)
@@ -125,10 +108,12 @@ function cancel () {
         justify-content space-between
         margin-top 8px
         padding-top 16px
+        width 100%
 
     #form
         align-items flex-start
         display flex
+        flex-direction column
         justify-content space-between
         margin-top 18px
 

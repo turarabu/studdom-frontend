@@ -12,6 +12,7 @@
                 p( class='help' ) Используйте учетную запись, чтобы войти в систему
 
                 div( class='input-div' )
+                    p( v-if='error' class='error' ) {{ error }}
                     input( class='input' type='text' placeholder='Логин' v-model='login' )
                     input( class='input' type='password' placeholder='Пароль' v-model='password' )
 
@@ -30,6 +31,8 @@ export default {
     methods: { loadData, signIn },
     data: function () {
         return {
+            lock: false,
+            error: false,
             login: '',
             password: '',
             saveMe: false
@@ -51,18 +54,30 @@ async function loadData () {
 
 async function signIn (event) {
     event.preventDefault()
+
+    if ( this.lock === true )
+        return
+
+    this.error = false
+    this.lock = true
     
     var data = {
         login: this.login,
         password: this.password
     }
 
-    var { status, data } = await this.api.post('user/sign-in', data)
+    var req = await this.api.post('user/sign-in', data)
+    var { error, success, data, message } = req
 
-    if ( status === 200 ) {
+    if ( success ) {
         this.$store.commit('user-set', data)
         this.loadData()
     }
+
+    if ( error )
+        this.error = message
+
+    return this.lock = false
 }
 
 </script>
@@ -92,7 +107,9 @@ async function signIn (event) {
         width 50%
 
     .background-image
-        width 100%
+        // margin-left -50px
+        height 100%
+        max-width 100%
 
     .background-text
         align-items center
@@ -108,6 +125,7 @@ async function signIn (event) {
         .text
             color $white
             font-size 2.635vw
+            text-shadow 0 0 5px RGBA(0, 0, 0, .25)
             line-height 3.075vw
             text-align center
             width 32.943vw
@@ -128,6 +146,10 @@ async function signIn (event) {
 
         .input-div
             margin 2.050vw 0
+
+        .error
+            color $red
+            font-size 18px
 
         .input
             border 0.073vw solid #B5B5B5

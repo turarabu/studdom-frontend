@@ -104,6 +104,7 @@ function updateFirst () {
             height: 340
         },
 
+        colors: ['#7cb5ec', '#f7a35c', '#90ed7d', '#8085e9', '#f44236'],
         title: { text: `${ months[0] } - ${ months[0] }` },
         credits: { enabled: false },
         exporting: { buttons: { contextButton: { enabled: false } } },

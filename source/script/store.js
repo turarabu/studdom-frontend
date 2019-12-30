@@ -10,13 +10,15 @@ Vue.use(Vuex)
 export default {
     modules: { user, dormitories, students },
     state: {
+        actions: [],
         cities: {},
         modals: [],
     },
 
     mutations: {
         openModal, closeModal,
-        'cities-set': setCities
+        'cities-set': setCities,
+        'set-actions': setActions
     },
 }
 
@@ -24,10 +26,8 @@ function setCities (state, list) {
     state.cities = list
 }
 
-function pushList (state, data) {
-    state.list[data.list].push(data.value)
-    state.last = new Date()
-    // console.log( state.list[data.list][ data.id ] )
+function setActions (state, data) {
+    state.actions = data
 }
 
 function openModal (state, modal) {

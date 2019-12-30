@@ -77,6 +77,7 @@ async function firstLevel2 () {
     Highcharts.chart('first-level-2', {
         title: { text: 'Динамика авторизации' },
         subtitle: { text: new Date().toLocaleDateString('ru', { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric'}) },
+        colors: ['#7cb5ec', '#f7a35c', '#90ed7d', '#8085e9', '#f44236'],
         credits: { enabled: false },
         legend: { enabled: false },
         yAxis: { title: { text: '' } },
@@ -118,6 +119,7 @@ function firstLevel3 () {
             text: 'Активность за неделю',
             margin: 16
         },
+        colors: ['#7cb5ec', '#f7a35c', '#90ed7d', '#8085e9', '#f44236'],
         credits: { enabled: false },
         exporting: {
             buttons: { contextButton: { enabled: false } }

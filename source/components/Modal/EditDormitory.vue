@@ -3,7 +3,7 @@
     div#create-dormitory( class='modal' )
         h3( class='modal-title' ) Редактирование общежития
 
-        form#form( class='blocks-div' @submit='save' )
+        form#create-form( class='blocks-div' @submit='save' )
             div( class='inputs-div' )
                 InputText( class='create-input' placeholder='Название общежития' v-model='dormitory.name' )
                 Select( class='create-input' placeholder='Город' :list='cities' v-model='dormitory.city' )
@@ -20,14 +20,9 @@
                         span( class='data' ) Название
                         span( class='data' ) Статус
 
-                    div( class='row' )
+                    div( v-if='dormitory.code === "vkgtu"' class='row' )
                         span( class='data' ) 1
                         span( class='data' ) Главный вход
-                        span( class='data' ) Активный
-
-                    div( class='row' )
-                        span( class='data' ) 2
-                        span( class='data' ) Боковой вход
                         span( class='data' ) Активный
 
         div( class='buttons-div' )
@@ -130,7 +125,7 @@ function cancel () {
         margin-top 8px
         padding-top 16px
 
-    #form
+    #create-form
         align-items flex-start
         display flex
         justify-content space-between

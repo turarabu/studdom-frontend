@@ -2,7 +2,7 @@
     div#about
         div( v-if='dormitory === undefined' class='controls-div' )
             Button( icon='plus' title='Добавить общежитие' background='blue' icon-top='2px' @click.native='openModal(true)' )
-            Button( icon='export-report' title='Выгрузить отчёт' background='green' )
+            //- Button( icon='export-report' title='Выгрузить отчёт' background='green' )
 
         div( v-else class='controls-div' )
             div( class='block' )
@@ -11,8 +11,8 @@
                 span( class='current-der' ) Общежитие: {{ dormitory.name }}
 
             div( class='block' )
-                input( class='datepicker' type='date' placeholder='C' )
-                input( class='datepicker' type='date' placeholder='По' )
+                input( class='range-datepicker' type='date' placeholder='C' )
+                input( class='range-datepicker' type='date' placeholder='По' )
                 Button( icon='edit' title='Редактировать' background='green' icon-top='1px' @click.native='openModal(false)' )
 
         router-view
@@ -82,7 +82,8 @@ async function start () {
             font-weight 500
             margin-left 64px
 
-        .datepicker
+        .range-datepicker
+            display none
             border 1px solid $light-gray
             border-radius 3px
             font-size 18px

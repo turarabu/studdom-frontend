@@ -2,11 +2,13 @@
     div#top-block
         div( class='notifications' )
             span( class='icon icon-bell' @click='showNots = !showNots' )
-            span( class='nots-count' @click='showNots = !showNots' ) 14
+            span( class='nots-count' @click='showNots = !showNots' ) {{ actions.length }}
 
             div( class='nots-list' :class='{ active: showNots }' )
-                span( class='note' ) Кто-то загрузил отчёт по чем-то
-                span( class='note' ) Кто-то загрузил отчёт по чем-то
+                div( class='scroll-div' )
+                    div( v-for='action in actions' class='note' ) 
+                        span( class='note-text' ) {{ action.description }}
+                        span( class='note-date' ) {{ getDate(action.date) }}
 
         div( class='user-menu' )
             div( class='content' @click='showMenu = !showMenu' )
@@ -23,13 +25,29 @@
 
 <script>
 export default {
-    methods: { quit },
+    computed: { actions },
+    methods: { getDate, quit },
     data: function () {
         return {
             showNots: false,
             showMenu: false
         }
     }
+}
+
+function actions () {
+    console.log(this.$store.state)
+    return this.$store.state.actions
+}
+
+function getDate (string) {
+    return new Date(string).toLocaleDateString('ru', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+    })
 }
 
 async function quit () {
@@ -90,16 +108,40 @@ async function quit () {
             box-shadow 0 0 0 RGBA(50, 50, 50, .5)
             max-height 0
             opacity 0
-            padding 0 16px
+            overflow hidden
             position absolute
             top calc(100% + 12px)
             right -16px
-            width 300px
+            width 400px
             &.active
                 box-shadow 0 0 3px 1px RGBA(50, 50, 50, .5)
-                max-height 200px
+                max-height 400px
                 opacity 1
-                padding 16px
+
+        .scroll-div
+            max-height 375px
+            margin 12px 4px 6px 0
+            overflow auto
+            padding 0 10px 0 12px
+
+        .note
+            background #EEE
+            border-radius 5px
+            display block
+            margin-bottom 4px
+            padding 4px 
+            
+        .note-text
+            display block
+            font-size 18px
+            margin 6px 8px
+
+        .note-date
+            display block
+            color #777
+            font-size 16px
+            text-align right
+            margin 12px 8px 6px 8px
 
     .user-menu
         border-left 1px solid transparentify($light-gray, .25)

@@ -21,9 +21,9 @@
         router-link( tag='a' class='link' active-class='active' to='/records' )
             span( class='icon icon-reports' )
             span Отчеты
-        router-link( tag='a' class='link' active-class='active' to='/settings' )
-            span( class='icon icon-cog' )
-            span Настройки
+        //- router-link( tag='a' class='link' active-class='active' to='/settings' )
+        //-     span( class='icon icon-cog' )
+        //-     span Настройки
 </template>
 
 <script>

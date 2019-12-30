@@ -1,10 +1,10 @@
 export default { install }
 
-const host = 'api.studdom.host'
-const port = 443
+// const host = 'api.studdom.host'
+// const port = 443
 
-// const host = 'localhost'
-// const port = 8000
+const host = 'localhost'
+const port = 8000
 
 function install (Vue) {
     Vue.prototype.api = { get, post }
@@ -12,7 +12,7 @@ function install (Vue) {
 
 function get (path, data = {}) {
     var query = getQuery(data)
-    var response = request(`https://${host}:${port}/${path}?${query}`, {
+    var response = request(`http://${host}:${port}/${path}?${query}`, {
         method: 'GET'
     })
 
@@ -21,7 +21,7 @@ function get (path, data = {}) {
 
 function post (path, data = {}) {
     var body = getFormData(data)
-    var response = request(`https://${host}:${port}/${path}`, {
+    var response = request(`http://${host}:${port}/${path}`, {
         body,
         method: 'POST'
     })
@@ -46,6 +46,7 @@ function typeResponse (request) {
 
             data: json.data,
             error: json.error,
+            message: json.message,
             success: json.success
         })
     })

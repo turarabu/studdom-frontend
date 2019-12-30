@@ -43,6 +43,7 @@ function update () {
     Highcharts.chart('activity-3', {
         chart: { type: 'areaspline' },
         title: { text: '' },
+        colors: ['#7cb5ec', '#f7a35c', '#90ed7d', '#8085e9', '#f44236'],
         exporting: { buttons: { contextButton: { enabled: false } } },
         legend: {
             layout: 'vertical',
