@@ -50,7 +50,7 @@ export default {
 }
 
 function download () {
-    window.open('http://localhost:8000/record/download?id=' + this.selected, '_blank')
+    window.open('https://api.studdom.host/record/download?id=' + this.selected, '_blank')
 }
 
 function getDate (date) {

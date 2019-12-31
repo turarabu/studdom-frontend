@@ -91,7 +91,7 @@ function download () {
     var types = `type=${ this.selected.report }&dormitory=${ this.selected.dormitory }`
 
 
-    window.open(`http://localhost:8000/record/pdf?${ range }&${ types }`, '_blank')
+    window.open(`https://api.studdom.host/record/pdf?${ range }&${ types }`, '_blank')
 }
 
 function start () {
