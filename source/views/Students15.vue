@@ -16,7 +16,7 @@ div#students
             
         tbody( class='body' )
             tr( v-for='(student, id) in sorted' class='row' :key='id' )
-                td( class='data' @click="showModal(student)") {{ student.lastName }} {{ student.firstName }}
+                td( class='data' ) {{ student.lastName }} {{ student.firstName }}
                 td( class='data' ) {{ getDormitory(student.dormitory) }}
                 td( class='data' ) {{ toDate(student.signUp) }}
                 td( class='data' )
@@ -30,20 +30,16 @@ div#students
 
 </template>
 
-
 <script>
-
 import Button from ':src/components/UI/Button.vue'
 import Switcher from ':src/components/UI/Switcher.vue'
 import SearchList from ':src/components/UI/SearchList.vue'
-import UserModal from ':src/components/Modal/ScreenModal.vue'
-
 
 export default {
     name: 'Students',
-    components: { Button, Switcher, SearchList, UserModal},
+    components: { Button, Switcher, SearchList },
     computed: { students, dormitories, all, sorted },
-    methods: { setStatus, getDormitory, getDNames, toDate, showModal },
+    methods: { setStatus, getDormitory, getDNames, toDate },
     beforeCreate: init,
     mounted: start,
     data: function () {
@@ -77,13 +73,6 @@ function init () {
 
 function students () {
     return this.$store.state.students.list
-}
-
-function showModal(student){
-    this.$store.commit('openModal', {
-        name: 'screenUser',
-        data:  student
-    })
 }
 
 function dormitories () {

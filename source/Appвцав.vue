@@ -6,11 +6,13 @@
         div#modals-div( v-if='modals.length > 0' @click='checkClose' )
             div( v-for='(modal, id) in modals' :key='id' )
                 ModalCreateUser( v-if='modal.name == "createUser"' v-bind='{ id, data: modal.data }' )
-                ModalScreenUser( v-if='modal.name == "screenUser"' v-bind='{ id, data: modal.data }' )
                 ModalCreateDormitory( v-if='modal.name == "createDormitory"' v-bind='{ id, data: modal.data }' )
-
+                ModalCreateTurnstile( v-if='modal.name == "createTurnstile"' v-bind='{ id, data: modal.data }' )
+                
                 ModalEditDormitory( v-if='modal.name == "editDormitory"' v-bind='{ id, data: modal.data }' )
                 ModalEditUser( v-if='modal.name == "editUser"' v-bind='{ id, data: modal.data }' )
+                ModalEditTurnstile( v-if='modal.name == "editTurnstile"' v-bind='{ id, data: modal.data }' )
+
 
 
 </template>
@@ -21,12 +23,15 @@ import Dashboard from ':src/components/Dashboard.vue'
 
 import ModalCreateUser from ':src/components/Modal/CreateUser.vue'
 import ModalCreateDormitory from ':src/components/Modal/CreateDormitory.vue'
-import ModalScreenUser from ':src/components/Modal/ScreenModal.vue'
+import ModalCreateTurnstile from ':src/components/Modal/CreateTurnstile.vue'
+
 import ModalEditDormitory from ':src/components/Modal/EditDormitory.vue'
 import ModalEditUser from ':src/components/Modal/EditUser.vue'
+import ModalEditTurnstile from ':src/components/Modal/EditTurnstile.vue'
+
 
 export default {
-    components: { AuthPage, Dashboard, ModalCreateUser, ModalCreateDormitory,ModalScreenUser, ModalEditDormitory, ModalEditUser },
+    components: { AuthPage, Dashboard, ModalCreateUser, ModalCreateDormitory, ModalEditDormitory, ModalEditUser, ModalCreateTurnstile, ModalEditTurnstile},
     computed: { user, modals },
     methods: { loadData, checkClose },
     mounted: start
