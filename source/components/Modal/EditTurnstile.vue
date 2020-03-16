@@ -20,10 +20,10 @@
                         span( class='data' ) Название
                         span( class='data' ) Статус
 
-                    div( v-for='(turnstile,index) in data.turnstiles' class='row' )
-                        span( class='data' ) {{index+1}}
-                        span( class='data' ) {{turnstile.name}}
-                        span( class='data' ) {{turnstile.active ? 'Активный' : 'Неактивный'}}
+                    div( v-if='dormitory.code === "vkgtu"' class='row' )
+                        span( class='data' ) 1
+                        span( class='data' ) Главный вход
+                        span( class='data' ) Активный
 
         div( class='buttons-div' )
             Button( title='Отменить' background='red' icon-top='2px' @click.native='cancel' )

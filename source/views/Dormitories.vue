@@ -14,6 +14,7 @@
                 input( class='range-datepicker' type='date' placeholder='C' )
                 input( class='range-datepicker' type='date' placeholder='По' )
                 Button( icon='edit' title='Редактировать' background='green' icon-top='1px' @click.native='openModal(false)' )
+                Button( class='margin-left' icon='create' title='Добавить турникет' background='green' icon-top='1px' @click.native='openTurnstileModal(true)' )
 
         router-view
 </template>
@@ -24,7 +25,7 @@ import Button from ':src/components/UI/Button.vue'
 export default {
     components: { Button },
     computed: { dors, dormitory },
-    methods: { back, openModal },
+    methods: { back, openModal, openTurnstileModal },
     mounted: start
 }
 
@@ -52,6 +53,23 @@ function openModal (isNew) {
         this.$store.commit('openModal', {
             name: 'editDormitory',
             data: this.dormitory
+        })
+    }
+}
+function openTurnstileModal (isNew) {
+    if ( isNew === true ) {
+        this.$store.commit('openModal', {
+            name: 'createTurnstile',
+            data: {
+                dormitory: this.dormitory.code
+            }
+        })
+    }
+
+    else {
+        this.$store.commit('openModal', {
+            name: 'editTurnstile',
+            data: {}
         })
     }
 }
@@ -89,5 +107,7 @@ async function start () {
             font-size 18px
             padding 6px 12px
             margin 0 8px
+.margin-left
+    margin-left 10px
 
 </style>
