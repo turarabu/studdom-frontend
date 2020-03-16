@@ -6,6 +6,8 @@
                 div( class='avatar-div' )
                     img( class='screenPhoto' :src='getFirstScreen(student.firstScreen)' :style={'height':'300px','margin':'10px'} )
                     img( class='screenPhoto' :src='getSecondScreen(student.secondScreen)' :style={'height':'300px','margin':'10px'} )
+                    br
+                    img( class='screenPhoto' :src='getSecondScreen(student.thirdScreen)' :style={'height':'300px','width':'820px','margin':'10px'} )
 
 
 
