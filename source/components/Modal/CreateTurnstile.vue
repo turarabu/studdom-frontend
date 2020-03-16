@@ -13,7 +13,7 @@
             div( class='buttons-div' )
                 Button( title='Отменить' background='red' icon-top='2px' @click.native='cancel' )
                 Button( icon='create' title='Создать' background='green' icon-top='2px' )
-                
+
 
 </template>
 
